@@ -3,23 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>M.M ISLAMIC ENGLISH SCHOOL</title>
+  <title>M.M ISLAMIC ENGLISH SCHOOL - Redirecting</title>
   
-  <!-- Fallback redirect if JS is disabled -->
+  <!-- Fallback redirect -->
   <meta http-equiv="refresh" content="0; url=login.html">
   <meta name="theme-color" content="#0f172a">
-</head>
-<body style="background: linear-gradient(135deg, #0b132b 0%, #1c2541 100%); display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; color: white; font-family: 'Segoe UI', sans-serif;">
   
-  <div style="font-weight: 800; font-size: 14px;">
-    <span style="display:inline-block; width: 16px; height: 16px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #0288d1; border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-right: 8px;"></span>
-    Securely Redirecting...
+  <style>
+    body {
+      background: linear-gradient(135deg, #0b132b 0%, #1c2541 100%);
+      color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .spinner {
+      width: 20px; height: 20px; border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%; border-top-color: #0288d1; animation: spin 0.8s linear infinite;
+      margin-right: 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <div style="display: flex; align-items: center; font-weight: 800; letter-spacing: 0.5px; font-size: 14px;">
+    <div class="spinner"></div> Securely Redirecting...
   </div>
 
-  <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
   <script>
-    // Immediate clean redirect
+    // Relative path redirection for GitHub Pages compatibility
     window.location.replace("login.html");
   </script>
+
 </body>
 </html>
