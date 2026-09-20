@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - M.M ISLAMIC ENGLISH SCHOOL</title>
+  <meta name="theme-color" content="#0f172a">
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0b132b 0%, #1c2541 100%);
+      --card-bg: #ffffff;
+      --border-color: #e2e8f0;
+      --primary-btn-bg: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+    body { display: flex; justify-content: center; align-items: center; height: 100vh; background: var(--bg-gradient); padding: 20px; }
+    
+    .login-box {
+      background: var(--card-bg); padding: 32px 24px; border-radius: 22px; text-align: center;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.35); width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 16px;
+    }
+    .login-box input { width: 100%; padding: 12px 14px; border: 1px solid var(--border-color); border-radius: 12px; font-size: 14px; outline: none; }
+    .btn-primary {
+      width: 100%; padding: 13px; background: var(--primary-btn-bg); color: white; border: none; border-radius: 25px;
+      font-size: 14px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 14px rgba(2, 136, 209, 0.3);
+    }
+    .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
+    #loginError { color: #dc2626; font-size: 12px; font-weight: 700; display: none; }
+  </style>
+</head>
+<body>
+
+  <div class="login-box">
+    <div>
+      <h2 style="color: #0288d1; font-size: 16px; font-weight: 800; margin-bottom: 4px;">M.M ISLAMIC ENGLISH SCHOOL</h2>
+      <h4 style="color: #e65100; font-size: 12px; font-weight: 800; letter-spacing: 0.5px;">PORTAL LOGIN</h4>
+    </div>
+    
+    <input type="text" id="loginUsername" placeholder="User ID / Username" autocomplete="off">
+    <input type="password" id="loginPassword" placeholder="Password">
+    <button id="loginBtn" class="btn-primary">SECURE LOGIN</button>
+    <p id="loginError"></p>
+  </div>
+
+  <script type="module">
+    import { safeDataFetch } from './js/api.js';
+
+    // Register Service Worker on entry
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(err => console.error("SW Registration failed:", err));
+    }
+
+    document.getElementById('loginBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('loginBtn');
+      const errorText = document.getElementById('loginError');
+      const u = document.getElementById("loginUsername").value.trim();
+      const p = document.getElementById("loginPassword").value.trim();
+
+      if (!u || !p) {
+        errorText.innerText = "Please enter both Username and Password.";
+        errorText.style.display = "block";
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerText = "VERIFYING...";
+      errorText.style.display = "none";
+
+      const usersData = await safeDataFetch("users");
+      const uData = usersData ? usersData[u] : null;
+
+      if (uData && uData.password === p) {
+        // Store Session
+        localStorage.setItem("loggedUser", u);
+        localStorage.setItem("loggedRole", uData.role);
+        if (uData.assignedClass) localStorage.setItem("assignedClass", uData.assignedClass);
+        if (uData.admn) localStorage.setItem("studentAdmn", uData.admn);
+
+        // Request Notification Permission immediately after successful login
+        if (Notification.permission !== "granted") {
+          await Notification.requestPermission();
+        }
+
+        // Clean Redirection
+        if (uData.role === "admin") window.location.href = "/admindashboard/admin.html";
+        else if (uData.role === "teacher") window.location.href = "/teacherdashboard/teacher.html";
+        else if (uData.role === "student") window.location.href = "/studentdashboard/student.html";
+      } else {
+        errorText.innerText = "Invalid credentials. Please try again.";
+        errorText.style.display = "block";
+        btn.disabled = false;
+        btn.innerText = "SECURE LOGIN";
+      }
+    });
+
+    // Auto-redirect if session exists
+    window.addEventListener('DOMContentLoaded', () => {
+      const role = localStorage.getItem("loggedRole");
+      if (role === "admin") window.location.href = "/admindashboard/admin.html";
+      else if (role === "teacher") window.location.href = "/teacherdashboard/teacher.html";
+      else if (role === "student") window.location.href = "/studentdashboard/student.html";
+    });
+  </script>
+</body>
+</html>
