@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>M.M ISLAMIC ENGLISH SCHOOL - Redirecting</title>
+  
+  <!-- Fallback redirect if JavaScript is disabled -->
+  <meta http-equiv="refresh" content="0; url=login.html">
+  
+  <style>
+    body {
+      background: linear-gradient(135deg, #0b132b 0%, #1c2541 100%);
+      color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .spinner {
+      width: 24px; height: 24px; border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%; border-top-color: #0288d1; animation: spin 0.8s linear infinite;
+      margin-right: 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <div style="display: flex; align-items: center; font-weight: 800; letter-spacing: 0.5px;">
+    <div class="spinner"></div> Redirecting to Secure Portal...
+  </div>
+
+  <script>
+    // Immediate redirect to the login page
+    window.location.replace("login.html");
+  </script>
+
+</body>
+</html>
