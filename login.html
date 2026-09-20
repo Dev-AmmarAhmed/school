@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Login - M.M ISLAMIC ENGLISH SCHOOL</title>
+  <meta name="theme-color" content="#0f172a">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body class="login-mode" style="background: var(--bg-gradient); display: flex; justify-content: center; align-items: center; height: 100vh; padding: 20px;">
+
+  <div class="login-box" style="background: var(--card-bg); padding: 32px 24px; border-radius: 22px; text-align: center; box-shadow: 0 15px 40px rgba(0,0,0,0.35); width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 16px; border: 1px solid var(--border-color);">
+    <div>
+      <h2 style="color: #0288d1; font-size: 16px; font-weight: 800; margin-bottom: 4px;">M.M ISLAMIC ENGLISH SCHOOL</h2>
+      <h4 style="color: #e65100; font-size: 12px; font-weight: 800; letter-spacing: 0.5px;">PORTAL LOGIN</h4>
+    </div>
+    
+    <input type="text" id="loginUsername" placeholder="User ID / Username" autocomplete="off">
+    <input type="password" id="loginPassword" placeholder="Password">
+    <button id="loginBtn" class="btn-primary">PORTAL LOGIN</button>
+    <p id="loginError" style="color:#dc2626; font-size:12px; font-weight:700; display:none;"></p>
+  </div>
+
+  <script type="module">
+    import { safeDataFetch } from './js/api.js';
+
+    // 1. Initialize Background Service Worker for App-Level Notifications
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(err => console.error("SW Registration failed:", err));
+    }
+
+    // 2. Auto-Redirect if Session Exists (Keeps URL clean)
+    window.addEventListener('DOMContentLoaded', () => {
+      const role = localStorage.getItem("loggedRole");
+      if (role === "admin") window.location.replace("/admindashboard/index.html");
+      else if (role === "teacher") window.location.replace("/teacherdashboard/index.html");
+      else if (role === "student") window.location.replace("/studentdashboard/index.html");
+    });
+
+    // 3. Authentication & Security Routing
+    document.getElementById('loginBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('loginBtn');
+      const errorText = document.getElementById('loginError');
+      const u = document.getElementById("loginUsername").value.trim();
+      const p = document.getElementById("loginPassword").value.trim();
+
+      if (!u || !p) {
+        errorText.innerText = "Please enter both Username and Password.";
+        errorText.style.display = "block";
+        return;
+      }
+
+      // UI Spinner Action
+      btn.disabled = true;
+      btn.innerHTML = `<span style="display:inline-block; width:16px; height:16px; border:3px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:spin 0.8s linear infinite; margin-right:8px;"></span> VERIFYING...`;
+      errorText.style.display = "none";
+
+      // Secure Realtime DB Verification
+      const usersData = await safeDataFetch("users");
+      const uData = usersData ? usersData[u] : null;
+
+      if (uData && uData.password === p) {
+        
+        // Store Role Variables Locally
+        localStorage.setItem("loggedUser", u);
+        localStorage.setItem("loggedPass", p);
+        localStorage.setItem("loggedRole", uData.role);
+        if (uData.assignedClass) localStorage.setItem("assignedClass", uData.assignedClass);
+        if (uData.admn) localStorage.setItem("studentAdmn", uData.admn);
+
+        // App-Level Notification Permission Prompt (Crucial for 8 PM reminders)
+        if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+          await Notification.requestPermission();
+        }
+
+        // Clean Redirection
+        if (uData.role === "admin") window.location.replace("/admindashboard/index.html");
+        else if (uData.role === "teacher") window.location.replace("/teacherdashboard/index.html");
+        else if (uData.role === "student") window.location.replace("/studentdashboard/index.html");
+      } else {
+        errorText.innerText = "Invalid credentials. Please try again.";
+        errorText.style.display = "block";
+        btn.disabled = false;
+        btn.innerText = "PORTAL LOGIN";
+      }
+    });
+  </script>
+</body>
+</html>
