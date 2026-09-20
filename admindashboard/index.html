@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Admin Portal - M.M ISLAMIC ENGLISH SCHOOL</title>
+  <meta name="theme-color" content="#1e3a8a">
+  <link rel="icon" type="image/jpeg" href="https://raw.githubusercontent.com/Dev-AmmarAhmed/mm-islamic-student-dashboard/6ffc7a916bc2902c4baea4a123634fbe732647b1/book-floating-cartoon-vector-icon-illustration-education-object-icon-isolated-flat-vector_138676-13661.jpg">
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body class="admin-mode theme-navy">
+
+  <!-- HEADER -->
+  <header id="topBar" class="app-header">
+    <button id="hamburgerBtn" class="icon-btn">☰</button>
+    <div class="header-title-box">
+      <div class="header-title">M.M ISLAMIC ENGLISH SCHOOL</div>
+      <div class="header-subtitle">ADMINISTRATOR DASHBOARD PRO</div>
+    </div>
+    <button id="notifBtn" class="icon-btn" style="position: relative; margin-right: 8px;">
+      🔔 <span id="notifBadge" style="display:none; position:absolute; top:-5px; right:-5px; background:#dc2626; color:white; border-radius:50%; padding:2px 6px; font-size:9px; font-weight:bold;">0</span>
+    </button>
+    <button id="threeDotBtn" class="icon-btn">⋮</button>
+    <div id="menuDropdown" class="menu-dropdown">
+      <div class="menu-item logout" id="logoutBtnTop">🚪 Logout</div>
+    </div>
+  </header>
+
+  <!-- LEFT DRAWER -->
+  <div id="drawerOverlay" class="left-drawer-overlay"></div>
+  <div id="leftDrawer" class="left-drawer">
+    <div class="drawer-header">
+      <span>⚙️ Master Panel</span>
+      <span class="close-modal" id="closeDrawerBtn">✕</span>
+    </div>
+
+    <div class="dark-mode-toggle-row">
+      <span>🌙 Dark Mode</span>
+      <label class="switch"><input type="checkbox" id="darkModeCheckbox"><span class="slider"></span></label>
+    </div>
+
+    <div class="drawer-body">
+      <!-- NEW: TEACHERS MUSTER SECTION (Drawer Access) -->
+      <div class="drawer-item" onclick="window.switchTab('adminTabMuster', null); document.getElementById('closeDrawerBtn').click();" style="color:#0288d1; font-weight:900; background:rgba(2, 136, 209, 0.08);">📋 Teachers' Muster Roll</div>
+      
+      <div style="padding: 10px 18px 4px 18px; font-size:11px; font-weight:800; color:var(--text-muted); margin-top:8px;">MASTER CONTROLS</div>
+      <div class="drawer-item" onclick="window.openModal('adminLeaderboardModal')">🏆 Class Leaderboards</div>
+      <div class="drawer-item" onclick="window.openModal('adminTeacherLeaderboardModal')">👩‍🏫 Teacher Leaderboard</div>
+      <div class="drawer-item" onclick="window.exportFullDatabaseJson()">📥 Export JSON Backup</div>
+      <div class="drawer-item" onclick="window.openModal('bulkStudentModal')">📋 Add Bulk Students</div>
+      <div class="drawer-item" onclick="window.switchTab('adminTabTeachers', null); window.loadManageTeacherList(); document.getElementById('closeDrawerBtn').click();">👩‍🏫 Teacher Management</div>
+      <div class="drawer-item" onclick="window.switchTab('adminTabLogs', null); window.loadSystemFeesLogs(); document.getElementById('closeDrawerBtn').click();">📜 Logs & Entries</div>
+      
+      <div style="padding: 10px 18px 4px 18px; font-size:11px; font-weight:800; color:var(--text-muted); margin-top:8px;">REMOVAL & VAULT</div>
+      <div class="drawer-item" onclick="window.openModal('credentialsModal')">🔑 Logins & Passwords</div>
+      <div class="drawer-item" onclick="window.openModal('removeAttendModal')">📅 Remove Attendance</div>
+      <div class="drawer-item" onclick="window.openModal('removeStudentModal')">👤 Remove Student</div>
+      
+      <div class="drawer-item logout" id="logoutBtnDrawer" style="margin-top: auto; color: #dc2626 !important; border-top: 1px solid var(--border-color);">🚪 Logout</div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT VIEWS -->
+  <main id="mainContainer" class="main-content">
+
+    <!-- 1. HOME TAB -->
+    <section id="adminTabHome" class="tab-section active animate-in">
+      <div class="card">
+        <div class="card-title">Fees Overview Dashboard</div>
+        <label>Select Standard:</label>
+        <select id="homeStdSelect">
+          <option value="">-- Select Standard --</option>
+          <option value="Nursery">Nursery</option><option value="Jr. KG">Jr. KG</option><option value="Sr. KG">Sr. KG</option>
+          <option value="1">Class 1</option><option value="2">Class 2</option><option value="3">Class 3</option><option value="4">Class 4</option><option value="5">Class 5</option><option value="6">Class 6</option>
+        </select>
+        <label>Select Month:</label>
+        <select id="homeMonthSelect">
+          <option value="June">June</option><option value="July">July</option><option value="August">August</option>
+          <option value="September" selected>September</option><option value="October">October</option><option value="November">November</option>
+          <option value="December">December</option><option value="January">January</option><option value="February">February</option>
+          <option value="March">March</option><option value="April">April</option><option value="May">May</option>
+        </select>
+        <button id="getStatsBtn" class="btn-primary">Get Stats</button>
+      </div>
+
+      <div class="card" id="homeStatsArea" style="display:none;">
+        <div class="card-title">Class Analytics Summary</div>
+        <div class="stats-grid">
+          <div class="stat-card blue"><span>Paid Students</span><h3 id="statPaidCount">0</h3></div>
+          <div class="stat-card red"><span>Unpaid Students</span><h3 id="statUnpaidCount">0</h3></div>
+        </div>
+        <div class="card-title" style="margin-top: 16px;">Student Fee Status List</div>
+        <div class="table-container">
+          <table style="min-width: 100%;">
+            <thead><tr><th>Admn</th><th>Student Name</th><th>Status</th></tr></thead>
+            <tbody id="homeFeeListBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card unfold-card" style="margin-top: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; margin-bottom: 12px;">
+          <div class="card-title" style="border: none; margin-bottom: 0;">🏆 Teacherboard Standings</div>
+          <button onclick="window.openModal('addTeacherPointsModal')" class="btn-primary btn-orange" style="margin-top: 0; width: auto; padding: 6px 14px; font-size: 11px;">⭐ Add Points</button>
+        </div>
+        <div id="adminHomeTeacherboardCardsContainer"><div style="font-size: 12px; color: var(--text-muted); text-align: center; padding: 10px;">Loading Teacherboard...</div></div>
+      </div>
+    </section>
+
+    <!-- 2. STUDENTS TAB (With Search) -->
+    <section id="adminTabStudents" class="tab-section">
+      <div class="class-chips-container">
+        <div class="class-chip active" onclick="window.filterAdminStudentByClass('All', this)">All</div>
+        <div class="class-chip" onclick="window.filterAdminStudentByClass('Nursery', this)">Nursery</div>
+        <div class="class-chip" onclick="window.filterAdminStudentByClass('Jr. KG', this)">Jr. KG</div>
+        <div class="class-chip" onclick="window.filterAdminStudentByClass('Sr. KG', this)">Sr. KG</div>
+        <div class="class-chip" onclick="window.filterAdminStudentByClass('1', this)">Class 1</div>
+        <div class="class-chip" onclick="window.filterAdminStudentByClass('2', this)">Class 2</div>
+        <div class="class-chip" onclick="window.filterAdminStudentByClass('3', this)">Class 3</div>
+        <div class="class-chip" onclick="window.filterAdminStudentByClass('4', this)">Class 4</div>
+        <div class="class-chip" onclick="window.filterAdminStudentByClass('5', this)">Class 5</div>
+        <div class="class-chip" onclick="window.filterAdminStudentByClass('6', this)">Class 6</div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <div style="font-size:14px; font-weight:800;">🎓 Directory (<span id="adminStudentCountText">0</span>)</div>
+          <button onclick="window.openModal('registerStudentModal')" class="btn-primary btn-green" style="margin-top:0; width:auto; padding:6px 14px; font-size:11px;">➕ Add Student</button>
+        </div>
+        <!-- Searchable Dropdown Input -->
+        <div style="position: relative; margin-bottom: 16px;">
+          <input type="text" id="aStudentSearch" placeholder="Search student to open profile..." autocomplete="off">
+          <div id="aSearchResultsBox" class="search-results-box"></div>
+        </div>
+        <div id="adminStudentsDirectoryContainer">Loading students...</div>
+      </div>
+    </section>
+
+    <!-- 3. FEES ENTRY TAB -->
+    <section id="adminTabEntry" class="tab-section">
+      <div class="card" style="text-align: center; padding: 20px;">
+        <div class="card-title" style="border:none; margin-bottom: 8px;">Fees Entry Control</div>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Record student fee payments.</p>
+        <button onclick="window.openModal('feesEntryModal')" class="btn-primary btn-green" style="font-size: 15px; padding: 14px;">🟢 + Add Fees Entry</button>
+      </div>
+
+      <div class="card" style="margin-top: 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; margin-bottom: 12px;">
+          <div class="card-title" style="border: none; margin-bottom: 0;">📅 Current Month Summary</div>
+          <div id="entryTabLiveDate" style="font-size: 11px; font-weight: 800; color: #0288d1; background: rgba(2, 136, 209, 0.1); padding: 4px 10px; border-radius: 12px;">DD/MM/YYYY</div>
+        </div>
+        <div class="stats-grid">
+          <div id="entryBlueCollectedCard" class="stat-card blue ripple-card" onclick="window.handleBlueCardTouchTap()" style="padding: 16px; border-radius: 18px; background: linear-gradient(135deg, #0288d1 0%, #01579b 100%); position: relative;">
+            <span style="font-size: 11px; font-weight: 800; opacity: 0.95;">Collected Amount (<span id="entryCurrentMonthName1">-</span>)</span>
+            <h3 id="entryCollectedAmountText" style="font-size: 20px; margin-top: 6px; font-weight: 900; color: #ffffff !important;">₹0</h3>
+            <div style="font-size: 9px; opacity: 0.85; margin-top: 4px; font-weight: 700; text-align: right;">💡 Triple tap for Paid list</div>
+          </div>
+          <div id="entryRedDueCard" class="stat-card red ripple-card" onclick="window.handleRedCardTouchTap()" style="padding: 16px; border-radius: 18px; background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); position: relative;">
+            <span style="font-size: 11px; font-weight: 800; opacity: 0.95;">Total Due Fees (Upto <span id="entryCurrentMonthName2">-</span>)</span>
+            <h3 id="entryTotalDueAmountText" style="font-size: 20px; margin-top: 6px; font-weight: 900; color: #ffffff !important;">₹0</h3>
+            <div style="font-size: 9px; opacity: 0.85; margin-top: 4px; font-weight: 700; text-align: right;">💡 Triple tap for Unpaid list</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. TRACK FEES TAB -->
+    <section id="adminTabTrack" class="tab-section">
+      <div class="card">
+        <div class="card-title">Track Fees Details</div>
+        <label>Select Standard:</label>
+        <select id="trackStdSelect">
+          <option value="Nursery">Nursery</option><option value="Jr. KG">Jr. KG</option><option value="Sr. KG">Sr. KG</option>
+          <option value="1">Class 1</option><option value="2">Class 2</option><option value="3">Class 3</option><option value="4">Class 4</option><option value="5">Class 5</option><option value="6">Class 6</option>
+        </select>
+        <button id="trackFeesBtn" class="btn-primary">Track Fees Matrix</button>
+      </div>
+
+      <div class="card" id="trackMatrixArea" style="display:none;">
+        <div class="card-title" id="trackClassTitle">Class Fee Record Table</div>
+        <div class="table-container" id="printableTableArea">
+          <table style="min-width: 1200px;">
+            <thead>
+              <tr>
+                <th style="min-width: 150px; text-align: left; padding-left:10px;">Student Name</th>
+                <th>June</th><th>July</th><th>Aug</th><th>Sept</th><th>Oct</th><th>Nov</th><th>Dec</th><th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>May</th>
+                <th style="background:#0f172a; color:#fbbf24 !important;">1st Term</th><th style="background:#0f172a; color:#fbbf24 !important;">1st Exam</th>
+                <th style="background:#0f172a; color:#fbbf24 !important;">2nd Term</th><th style="background:#0f172a; color:#fbbf24 !important;">2nd Exam</th>
+              </tr>
+            </thead>
+            <tbody id="matrixTableBody"></tbody>
+          </table>
+        </div>
+        <button id="generatePdfBtn" class="btn-primary btn-purple" style="margin-top: 16px;">📄 Generate Class PDF</button>
+      </div>
+    </section>
+
+    <!-- 5. ATTENDANCE TAB -->
+    <section id="adminTabAttend" class="tab-section">
+      <div class="card">
+        <div class="card-title">✏️ Edit / Update Attendance Matrix</div>
+        <label>Select Class:</label>
+        <select id="attEditStdSelect">
+          <option value="1">Class 1</option><option value="2">Class 2</option><option value="3">Class 3</option>
+          <option value="Nursery">Nursery</option><option value="Jr. KG">Jr. KG</option><option value="Sr. KG">Sr. KG</option>
+        </select>
+        <label>Select Month:</label>
+        <select id="attEditMonthSelect"><option value="January">January</option><option value="June">June</option><option value="September" selected>September</option></select>
+        <button id="loadEditingMatrixBtn" class="btn-primary">Load Editing Matrix</button>
+      </div>
+
+      <div class="card" id="editingMatrixCard" style="display:none;">
+        <div class="card-title">Attendance Entry Matrix</div>
+        <div class="table-container"><table id="editMatrixTable"><thead><tr id="editMatrixHeaderRow"><th>Name</th></tr></thead><tbody id="editMatrixBody"></tbody></table></div>
+        <button id="saveAttendanceChangesBtn" class="btn-primary btn-green" style="margin-top:14px;">Save Changes to Record</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🔍 Track Attendance</div>
+        <label>Class & Filter:</label>
+        <select id="attTrackStdSelect" style="margin-bottom:8px;"><option value="1">Class 1</option><option value="2">Class 2</option></select>
+        <div class="search-input-wrapper">
+          <input type="text" id="attTrackSearchInput" placeholder="Select 'All Students' or search..." autocomplete="off">
+          <input type="hidden" id="attTrackSelectedAdmn" value="ALL">
+          <div id="attTrackResultsBox" class="search-results-box"></div>
+        </div>
+        <label>Select Month:</label>
+        <select id="attTrackMonthSelect"><option value="September" selected>September</option></select>
+        <button id="trackAttendanceBtn" class="btn-primary">Track Attendance</button>
+      </div>
+
+      <div class="card" id="attReportArea" style="display:none;">
+        <div class="card-title" id="attReportTitle">Attendance Report</div>
+        <div id="attReportContent"></div>
+        <button id="adminGenerateAttPdfBtn" class="btn-primary btn-purple" style="margin-top: 16px;">📄 Download Attendance PDF</button>
+      </div>
+    </section>
+
+    <!-- 6. FEES CARD GENERATOR -->
+    <section id="adminTabCard" class="tab-section">
+      <div class="card">
+        <div class="card-title">Student Fees Card Generator</div>
+        <label>Standard & Name:</label>
+        <select id="cardStdSelect" style="margin-bottom:8px;"><option value="1">Class 1</option><option value="2">Class 2</option></select>
+        <div class="search-input-wrapper">
+          <input type="text" id="cardSearchInput" placeholder="Type student name to search..." autocomplete="off">
+          <input type="hidden" id="cardSelectedAdmn">
+          <div id="cardSearchResultsBox" class="search-results-box"></div>
+        </div>
+        <button id="generateCardBtn" class="btn-primary btn-orange" style="margin-top:14px;">Generate Fees Card</button>
+      </div>
+
+      <div class="card" id="feesCardDisplayArea" style="display:none;">
+        <div style="text-align:center; margin-bottom:12px; border-bottom:2px solid var(--border-color); padding-bottom:10px;">
+          <h3 style="color:#0288d1 !important; font-size:16px; font-weight:900;">M.M ISLAMIC ENGLISH SCHOOL</h3>
+          <h4 id="cardStudentHeaderName" style="font-size:14px; font-weight:800; margin-top:4px;">Student Name: -</h4>
+          <p id="cardStudentHeaderClass" style="font-size:12px; font-weight:700; color:var(--text-muted); margin-top:2px;">Class: - | Admn No: -</p>
+        </div>
+        <div class="table-container">
+          <table style="min-width: 100%;">
+            <thead><tr><th>Fee Type</th><th>Fees</th><th>Status</th><th>Payment Details</th></tr></thead>
+            <tbody id="cardDisplayBody"></tbody>
+          </table>
+        </div>
+        <button id="adminGenerateFeesCardPdfBtn" class="btn-primary btn-purple" style="margin-top: 16px;">📄 Download Fees Card PDF</button>
+      </div>
+    </section>
+
+    <!-- 7. EXPENSES TAB (NEW EDITABLE STRUCTURE) -->
+    <section id="adminTabExpns" class="tab-section">
+      <div class="card">
+        <div class="card-title">➕ Add Expense</div>
+        <label>Expense Type:</label>
+        <select id="expType">
+          <option value="">-- Select Type --</option>
+          <option value="Teacher Salary">Teacher Salary</option><option value="Light Bill">Light Bill</option>
+          <option value="Rent">Rent</option><option value="Bag Purchase">Bag Purchase</option>
+          <option value="Uniform Tailor">Uniform Tailor</option><option value="Others">Others</option>
+        </select>
+        <div id="expTeacherBox" style="display:none; margin-top:10px;"><label>Select Teacher Name:</label><select id="expTeacherNameSelect"><option value="">-- Select Teacher --</option></select></div>
+        <div id="expDescBox" style="display:none; margin-top:10px;"><label>Description / Detail:</label><input type="text" id="expDescInput" placeholder="Enter description..."></div>
+        <label>Amount (Rs.):</label>
+        <input type="number" id="expAmount" placeholder="e.g. 5000">
+        <button id="submitExpBtn" class="btn-primary btn-green">Submit Entry</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📊 Manage Expenses (Edit/Delete)</div>
+        <label>Select Month:</label>
+        <select id="expGenMonthSelect">
+          <option value="June">June</option><option value="July">July</option><option value="August">August</option><option value="September" selected>September</option>
+        </select>
+        <button id="generateExpenseSheetBtn" class="btn-primary btn-purple">Load Expenses</button>
+        
+        <div id="expenseSheetDisplayArea" style="display:none; margin-top:14px;">
+          <div class="table-container">
+            <table style="min-width: 100%;">
+              <thead><tr><th>Date</th><th>Type</th><th>Details</th><th>Amount (₹)</th><th>Action</th></tr></thead>
+              <tbody id="expSheetBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. TEACHERS' MUSTER ROLL TAB (DUAL-ROW) -->
+    <section id="adminTabMuster" class="tab-section">
+      <div class="card">
+        <div class="card-title">📋 Monthly Teachers' Muster</div>
+        <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Track accurate In and Out times recorded via the Teacher Dashboard.</p>
+        <label>Select Month:</label>
+        <select id="musterMonthSelect">
+          <option value="01">January</option><option value="02">February</option><option value="03">March</option>
+          <option value="08">August</option><option value="09" selected>September</option><option value="10">October</option>
+        </select>
+
+        <label>Select Teacher:</label>
+        <select id="musterTeacherSelect">
+          <option value="ALL">-- All Teachers --</option>
+        </select>
+
+        <button id="loadMusterBtn" class="btn-primary btn-purple">Load Muster Roll</button>
+      </div>
+
+      <div class="card" id="musterTableCard" style="display:none; padding: 10px; overflow-x: auto;">
+        <!-- Dual Row Structure Table -->
+        <table class="muster-table" id="musterTable">
+          <!-- Rendered dynamically via JS -->
+        </table>
+      </div>
+    </section>
+
+    <!-- 9. TEACHERS MANAGEMENT TAB -->
+    <section id="adminTabTeachers" class="tab-section">
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px;">
+          <div class="card-title" style="border: none; margin-bottom: 0;">👩‍🏫 Teachers Management</div>
+          <button onclick="window.openModal('registerTeacherModal')" class="btn-primary btn-green" style="margin-top: 0; width: auto; padding: 6px 14px; font-size: 11px;">➕ Add Teacher</button>
+        </div>
+        <div class="table-container" style="max-height: 65vh; overflow-y: auto;">
+          <table style="min-width: 100%;">
+            <thead><tr><th>#</th><th style="text-align: left; padding-left: 8px;">Name</th><th>Class</th><th>Username</th><th>Password</th><th>Actions</th></tr></thead>
+            <tbody id="manageTeacherTableBody"><tr><td colspan="6" style="padding: 14px; text-align: center;">⏳ Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. SYSTEM LOGS TAB -->
+    <section id="adminTabLogs" class="tab-section">
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:2px solid var(--border-color); padding-bottom:8px;">
+          <div class="card-title" style="border:none; margin-bottom:0;">📜 System Logs (Fees)</div>
+          <button onclick="window.loadSystemFeesLogs()" class="btn-primary btn-blue" style="width:auto; padding:5px 12px; font-size:11px; margin-top:0;">🔄 Refresh</button>
+        </div>
+        <div class="table-container" style="max-height: 65vh; overflow-y: auto;">
+          <table style="min-width: 100%;">
+            <thead><tr><th>Date</th><th>Admn</th><th>Student Name</th><th>Months</th><th>Amount</th><th>Mode</th><th>Actions</th></tr></thead>
+            <tbody id="systemFeesLogsBody"><tr><td colspan="7" style="padding:12px;">Click Refresh...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BOTTOM NAVIGATION -->
+  <nav id="bottomNav" class="bottom-nav">
+    <div class="nav-item active" onclick="window.switchTab('adminTabHome', this)"><div class="nav-icon">🏠</div>Home</div>
+    <div class="nav-item" onclick="window.switchTab('adminTabStudents', this)"><div class="nav-icon">👤</div>Students</div>
+    <div class="nav-item" onclick="window.switchTab('adminTabEntry', this)"><div class="nav-icon">📝</div>Entry</div>
+    <div class="nav-item" onclick="window.switchTab('adminTabTrack', this)"><div class="nav-icon">🔍</div>Track</div>
+    <div class="nav-item" onclick="window.switchTab('adminTabAttend', this)"><div class="nav-icon">📅</div>Attend</div>
+    <div class="nav-item" onclick="window.switchTab('adminTabCard', this)"><div class="nav-icon">💳</div>Card</div>
+    <div class="nav-item" onclick="window.switchTab('adminTabExpns', this)"><div class="nav-icon">📊</div>Expns</div>
+  </nav>
+
+  <!-- ====================================================================
+       ALL ORIGINAL MODALS + EXPENSE EDITOR MODAL
+       ==================================================================== -->
+
+  <!-- Notifications Modal -->
+  <div id="notificationsModal" class="modal-overlay">
+    <div class="modal-content"><div class="modal-header"><span>🔔 Logs & Alerts</span><span class="close-modal" onclick="window.closeModal('notificationsModal')">✕</span></div><div class="modal-body" id="notifListContainer" style="max-height:60vh; overflow-y:auto;"></div></div>
+  </div>
+
+  <!-- Custom Alert Modal -->
+  <div id="customAlertModal" class="modal-overlay" style="z-index: 99999;">
+    <div class="modal-content" style="max-width: 320px; text-align: center; padding: 22px; border-radius: 20px;">
+      <h3 style="color: #0288d1; font-size: 15px; font-weight: 800; margin-bottom: 3px;">System says</h3>
+      <div id="customAlertMessage" style="font-size: 13px; font-weight: 700; margin-bottom: 22px;"></div>
+      <button class="btn-primary btn-blue" style="margin-top:0; border-radius: 12px;" onclick="window.closeModal('customAlertModal')">OK</button>
+    </div>
+  </div>
+
+  <!-- Fees Due Detail (Triple Tap) -->
+  <div id="feesDueDetailModal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 620px;">
+      <div class="modal-header"><span id="feesModalHeaderTitle">⚠️ Breakdown</span><span class="close-modal" onclick="window.closeModal('feesDueDetailModal')">✕</span></div>
+      <div class="modal-body">
+        <select id="dueModalStdSelect" onchange="window.renderFeesDueDetailTable(this.value)"><option value="ALL">All Classes</option><option value="1">Class 1</option></select>
+        <div style="font-size:12px; font-weight:800; color:var(--text-muted); margin-top:10px; margin-bottom:8px;" id="dueModalTotalSummaryText">Loading...</div>
+        <div class="table-container" style="max-height: 55vh; overflow-y: auto;">
+          <table style="min-width: 100%;"><thead><tr><th>Sr.</th><th style="text-align:left;">Name</th><th>Std</th><th style="text-align:left;">Due Months</th><th>Amount</th></tr></thead><tbody id="dueModalTableBody"></tbody></table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fees Entry Modal -->
+  <div id="feesEntryModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header"><span>📝 Add Fees Entry</span><span class="close-modal" onclick="window.closeModal('feesEntryModal')">✕</span></div>
+      <div class="modal-body">
+        <label>Select Standard:</label><select id="feeModalStd"><option value="1">Class 1</option><option value="2">Class 2</option></select>
+        <div class="search-input-wrapper">
+          <input type="text" id="feeStudentSearchInput" placeholder="Type student name..." autocomplete="off">
+          <input type="hidden" id="feeSelectedStudentAdmn">
+          <div id="feeSearchResultsBox" class="search-results-box"></div>
+        </div>
+        <label>Fee Types:</label>
+        <div class="checkbox-grid">
+          <div class="checkbox-item"><input type="checkbox" class="fee-chk" value="June"> June</div>
+          <div class="checkbox-item"><input type="checkbox" class="fee-chk" value="July"> July</div>
+          <div class="checkbox-item"><input type="checkbox" class="fee-chk" value="August"> August</div>
+          <div class="checkbox-item"><input type="checkbox" class="fee-chk" value="September"> Sept</div>
+        </div>
+        <label>Total Amount (Rs.):</label><input type="number" id="feeModalTotal" placeholder="Amount">
+        <label>Payment Mode:</label><select id="feeModalMode"><option value="Cash">Cash</option><option value="UPI / Online">UPI / Online</option></select>
+        <button id="submitFeeEntryBtn" class="btn-primary">Submit Entry</button>
+        <div id="feeSubmittedStatusBox" style="display:none; text-align:center; margin-top:14px;"><div style="color:#22c55e !important; font-weight:900;">✔ Submitted</div><button id="sendWhatsappReceiptBtn" class="btn-primary btn-green">📲 Send WhatsApp Receipt</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Register Student Modal -->
+  <div id="registerStudentModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header"><span>👤 Register New Student</span><span class="close-modal" onclick="window.closeModal('registerStudentModal')">✕</span></div>
+      <div class="modal-body">
+        <label>Admission No.:</label><input type="text" id="regAdmn" value="Loading..." disabled>
+        <label>Full Name *:</label><input type="text" id="regName" placeholder="Student Full Name">
+        <label>Select Class *:</label><select id="regStd"><option value="1">Class 1</option><option value="2">Class 2</option></select>
+        <label>WhatsApp Phone *:</label><input type="text" id="regPhone" placeholder="10-Digit Mobile Number">
+        <label>Photo (Optional):</label><input type="file" id="regPhotoFile" accept="image/*">
+        <button id="saveStudentBtn" class="btn-primary btn-green">Submit Registration</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Student Profile Edit Modal -->
+  <div id="studentProfileModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header"><span>👤 Student Profile & Edit</span><span class="close-modal" onclick="window.closeModal('studentProfileModal')">✕</span></div>
+      <div class="modal-body">
+        <input type="hidden" id="profStudentAdmn">
+        <div style="text-align:center;"><img id="profAvatarDisplay" src="https://via.placeholder.com/150" style="width:85px; height:85px; border-radius:50%; object-fit:cover; border:3px solid #0288d1;"></div>
+        <label>Full Name *:</label><input type="text" id="profNameInput">
+        <label>Admission No *:</label><input type="text" id="profAdmnDisplay">
+        <label>Login Password:</label><input type="text" id="profPasswordInput">
+        <label>Assigned Class:</label><select id="profClassSelect"><option value="1">Class 1</option><option value="2">Class 2</option></select>
+        <label>Mobile Number:</label><input type="text" id="profPhoneInput">
+        <label>Performance Points:</label><input type="number" id="profPointsInput">
+        <label>Change Photo:</label><input type="file" id="profPhotoFileInput" accept="image/*">
+        <button id="updateStudentProfileBtn" class="btn-primary btn-green" style="margin-top:16px;">💾 Update Profile</button>
+        <button id="deleteAdminStudentBtn" class="btn-primary btn-red" style="margin-top:8px;">🗑️ Delete Student Account</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bulk Add Students Modal -->
+  <div id="bulkStudentModal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="modal-header"><span>📋 Bulk Register (50 Rows)</span><span class="close-modal" onclick="window.closeModal('bulkStudentModal')">✕</span></div>
+      <div class="modal-body">
+        <label>Select Standard:</label><select id="bulkClassSelect" onchange="window.updateBulkClassColumn(this.value)"><option value="1">Class 1</option><option value="2">Class 2</option></select>
+        <div class="bulk-table-wrapper"><table class="bulk-table"><thead><tr><th>#</th><th>Student Name *</th><th>Standard</th><th>WhatsApp No *</th></tr></thead><tbody id="bulkTableBody"></tbody></table></div>
+        <button id="saveBulkStudentsBtn" class="btn-primary btn-green" style="margin-top:14px;">🚀 Save All</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Teacher Leaderboard Edit -->
+  <div id="adminTeacherLeaderboardModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header"><span>👩‍🏫 Teacher Leaderboard</span><span class="close-modal" onclick="window.closeModal('adminTeacherLeaderboardModal')">✕</span></div>
+      <div class="modal-body">
+        <button onclick="window.openModal('addTeacherPointsModal')" class="btn-primary btn-green">➕ Add / Deduct Points</button>
+        <div class="table-container"><table style="min-width: 100%;"><thead><tr><th>#</th><th>Name</th><th>Class</th><th>Points</th></tr></thead><tbody id="adminTeacherLbTableBody"></tbody></table></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Teacher Points -->
+  <div id="addTeacherPointsModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header"><span>⭐ Award Teacher Points</span><span class="close-modal" onclick="window.closeModal('addTeacherPointsModal')">✕</span></div>
+      <div class="modal-body">
+        <label>Select Teacher:</label><select id="adminTeacherSelect"></select>
+        <label>Points (+ / -):</label><input type="number" id="adminTeacherPointsInput">
+        <label>Reason / Note:</label><input type="text" id="adminTeacherReasonInput">
+        <button id="submitTeacherPointsBtn" onclick="window.saveTeacherPointsFromAdmin()" class="btn-primary btn-orange">⭐ Submit Points</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Student Leaderboard Edit -->
+  <div id="adminLeaderboardModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header"><span>🏆 Class Leaderboard Editor</span><span class="close-modal" onclick="window.closeModal('adminLeaderboardModal')">✕</span></div>
+      <div class="modal-body">
+        <label>Select Class:</label><select id="adminLbClassSelect" onchange="window.renderAdminClassLeaderboard(this.value)"><option value="1">Class 1</option><option value="2">Class 2</option></select>
+        <div style="display:flex; justify-content:space-between; margin-top:14px;"><div id="adminLbHeaderClassText" style="font-size:12px; font-weight:800;">Standings</div><button id="toggleAdminLbEditBtn" onclick="window.toggleAdminLeaderboardEditMode()" class="btn-primary btn-purple" style="width:auto; padding:5px 12px; font-size:11px;">✏️ Edit Points</button></div>
+        <div class="table-container"><table style="min-width: 100%;"><thead><tr><th>#</th><th>Student</th><th>Points</th></tr></thead><tbody id="adminLbTableBody"></tbody></table></div>
+        <button id="saveAdminLbPointsBtn" onclick="window.saveAdminLeaderboardPoints()" class="btn-primary btn-green" style="margin-top:14px; display:none;">💾 Save Points</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEW EXPENSE EDITOR MODAL -->
+  <div id="editExpenseModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header"><span>✏️ Edit Expense</span><span class="close-modal" onclick="window.closeModal('editExpenseModal')">✕</span></div>
+      <div class="modal-body">
+        <input type="hidden" id="editExpId"><input type="hidden" id="editExpMonth">
+        <label>Date:</label><input type="text" id="editExpDate" disabled>
+        <label>Expense Type:</label><select id="editExpType"><option value="Teacher Salary">Teacher Salary</option><option value="Light Bill">Light Bill</option><option value="Rent">Rent</option><option value="Others">Others</option></select>
+        <label>Details:</label><input type="text" id="editExpDesc">
+        <label>Amount (Rs.):</label><input type="number" id="editExpAmount">
+        <button id="saveExpenseEditBtn" class="btn-primary btn-green">💾 Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Register Teacher Modal -->
+  <div id="registerTeacherModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header"><span>👩‍🏫 Register Teacher</span><span class="close-modal" onclick="window.closeModal('registerTeacherModal')">✕</span></div>
+      <div class="modal-body">
+        <label>Teacher Name:</label><input type="text" id="tRegName">
+        <label>Username:</label><input type="text" id="tRegUser">
+        <label>Password:</label><input type="text" id="tRegPass">
+        <label>Assigned Class:</label><select id="tRegClass"><option value="1">Class 1</option><option value="2">Class 2</option></select>
+        <button id="saveTeacherBtn" class="btn-primary btn-green">Create Teacher</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Teacher Modal -->
+  <div id="editTeacherModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header"><span>✏️ Edit Teacher</span><span class="close-modal" onclick="window.closeModal('editTeacherModal')">✕</span></div>
+      <div class="modal-body">
+        <input type="hidden" id="editTeacherOldUsername">
+        <label>Teacher Name *:</label><input type="text" id="editTeacherName">
+        <label>Username:</label><input type="text" id="editTeacherUser" disabled>
+        <label>Password *:</label><input type="text" id="editTeacherPass">
+        <label>Assigned Class *:</label><select id="editTeacherClass"><option value="1">Class 1</option><option value="2">Class 2</option></select>
+        <button id="updateTeacherBtn" onclick="window.saveUpdatedTeacherDetails()" class="btn-primary btn-green">💾 Update Teacher</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Fee Log Modal -->
+  <div id="editFeeLogModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header"><span>✏️ Edit Fee Entry</span><span class="close-modal" onclick="window.closeModal('editFeeLogModal')">✕</span></div>
+      <div class="modal-body">
+        <input type="hidden" id="editLogAdmn"><input type="hidden" id="editLogEntryId">
+        <label>Amount (₹):</label><input type="number" id="editLogAmountInput">
+        <label>Mode:</label><select id="editLogModeSelect"><option value="Cash">Cash</option><option value="UPI / Online">UPI / Online</option></select>
+        <div class="checkbox-grid" id="editLogChecksContainer"></div>
+        <button id="saveFeeLogEditBtn" onclick="window.saveUpdatedFeeLogEntry()" class="btn-primary btn-green">💾 Update Entry</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Removals/Vaults -->
+  <div id="removeAttendModal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><span>🗑️ Remove Attendance</span><span class="close-modal" onclick="window.closeModal('removeAttendModal')">✕</span></div><div class="modal-body"><label>Class:</label><select id="rmAttStd"><option value="1">Class 1</option></select><label>Month:</label><select id="rmAttMonth"><option value="September">Sept</option></select><button id="clearAttendanceMonthBtn" class="btn-primary btn-red">Clear</button></div></div></div>
+  <div id="removeStudentModal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><span>🗑️ Remove Student</span><span class="close-modal" onclick="window.closeModal('removeStudentModal')">✕</span></div><div class="modal-body"><label>Class:</label><select id="rmStdClassSelect"><option value="1">Class 1</option></select><div class="table-container"><table style="width:100%"><tbody id="rmStudentBody"></tbody></table></div></div></div></div>
+  <div id="credentialsModal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><span>🔑 Vault</span><span class="close-modal" onclick="window.closeModal('credentialsModal')">✕</span></div><div class="modal-body"><div class="table-container"><table style="width:100%"><thead><tr><th>User</th><th>Pass</th></tr></thead><tbody id="credTeachersTableBody"></tbody></table></div><select id="credClassSelect"><option value="">-- Class --</option><option value="1">Class 1</option></select><div class="table-container" id="credStudentsDisplayArea" style="display:none;"><table style="width:100%"><tbody id="credStudentsTableBody"></tbody></table></div></div></div></div>
+
+  <!-- Custom Select Overlay -->
+  <div id="customSelectModal" class="modal-overlay" style="z-index: 100000;"><div class="modal-content" style="max-width: 380px; border-radius: 24px; padding: 0;"><div class="modal-header"><span id="customSelectTitle">Select</span><span class="close-modal" onclick="window.closeCustomSelectSheet()">✕</span></div><div id="customSelectOptionsContainer" style="max-height: 50vh; overflow-y: auto; padding: 10px;"></div></div></div>
+
+  <!-- ====================================================================
+       SCRIPTS (100% DECOUPLED FULL ADMIN ENGINE)
+       ==================================================================== -->
+  <script type="module">
+    import { safeDataFetch, verifyUserRole, listenForNotifications } from '../js/api.js';
+    import { ref, update, set, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { db } from '../js/firebaseconfig.js';
+
+    const userId = localStorage.getItem("loggedUser");
+    let allStudents = [];
+    let allTeachers = {};
+    let fullDbCache = {};
+    let isAdminLbEditMode = false;
+    let selectedAdminClassFilter = "All";
+    let lastGeneratedReceipt = null;
+
+    // 1. INITIALIZATION & DATA CACHE
+    async function initDashboard() {
+      if (!userId || localStorage.getItem("loggedRole") !== "admin") {
+        return window.location.replace('../login.html');
+      }
+
+      // Initial Base Load to construct UI
+      await buildCache();
+      
+      // Initial Render Triggers
+      window.renderAdminHomeTeacherboardCards();
+      window.renderAdminStudentsDirectory();
+      window.calculateAdminEntryTabAnalytics();
+      
+      // Notifications Listener
+      listenForNotifications(userId, renderNotifications);
+    }
+
+    async function buildCache() {
+      const snap = await safeDataFetch("/");
+      if(snap) {
+        fullDbCache = snap;
+        allStudents = snap.students ? Object.values(snap.students).filter(s => s && s.admn) : [];
+        allTeachers = snap.teachers ? snap.teachers : {};
+      }
+    }
+    
+    function cleanClassStr(str) { return str ? String(str).replace(/class\s*/i, "").trim() : ""; }
+    function getTodayFormattedDate() { const d=new Date(); return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`; }
+    function getTodayKey() { const d=new Date(); return `${d.getFullYear()}_${d.getMonth()+1}_${d.getDate()}`; }
+
+    // 2. TEACHERS MUSTER ROLL (DUAL-ROW)
+    document.getElementById('loadMusterBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('loadMusterBtn');
+      btn.innerText = "Loading..."; btn.disabled = true;
+
+      const month = document.getElementById('musterMonthSelect').value;
+      const year = new Date().getFullYear();
+      const selectedT = document.getElementById('musterTeacherSelect').value;
+      
+      const daysInMonth = new Date(year, parseInt(month), 0).getDate();
+      const table = document.getElementById('musterTable');
+      
+      let headerRow = `<thead><tr><th rowspan="2" class="muster-merged-cell">Sr. No</th><th rowspan="2" class="muster-merged-cell" style="min-width: 120px;">Name</th><th colspan="${daysInMonth}">Date (${month}/${year})</th></tr><tr>`;
+      for(let d=1; d<=daysInMonth; d++) { headerRow += `<th>${d}</th>`; }
+      headerRow += `</tr></thead><tbody id="musterBody"></tbody>`;
+      table.innerHTML = headerRow;
+
+      const tbody = document.getElementById('musterBody');
+      const teachersToRender = selectedT === "ALL" ? Object.keys(allTeachers) : [selectedT];
+
+      let srNo = 1;
+      for (let tId of teachersToRender) {
+        if(!allTeachers[tId].name) continue;
+        let inCells = ""; let outCells = "";
+
+        for (let d=1; d<=daysInMonth; d++) {
+          const dateKey = `${year}_${month}_${d.toString().padStart(2, '0')}`;
+          const tLogs = fullDbCache.teacher_logs && fullDbCache.teacher_logs[dateKey] ? fullDbCache.teacher_logs[dateKey][tId] : null;
+          
+          inCells += `<td>${tLogs && tLogs.in ? new Date(tLogs.in).toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'}) : '-'}</td>`;
+          outCells += `<td>${tLogs && tLogs.out ? new Date(tLogs.out).toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'}) : '-'}</td>`;
+        }
+
+        tbody.innerHTML += `
+          <tr>
+            <td rowspan="2" class="muster-merged-cell">${srNo}</td><td rowspan="2" class="muster-merged-cell">${allTeachers[tId].name}</td>
+            <td class="muster-row-in" style="font-weight:700; color:#16a34a;">IN</td>${inCells.substring(4)} 
+          </tr><tr><td class="muster-row-out" style="font-weight:700; color:#dc2626;">OUT</td>${outCells.substring(4)}</tr>
+        `;
+        srNo++;
+      }
+
+      document.getElementById('musterTableCard').style.display = 'block';
+      btn.innerText = "Load Muster Roll"; btn.disabled = false;
+    });
+
+    // 3. EDITABLE EXPENSE MANAGER
+    document.getElementById("expType").addEventListener("change", (e) => {
+      document.getElementById("expTeacherBox").style.display = e.target.value === "Teacher Salary" ? "block" : "none";
+      document.getElementById("expDescBox").style.display = e.target.value === "Teacher Salary" ? "none" : "block";
+    });
+
+    document.getElementById("submitExpBtn").addEventListener("click", async () => {
+      const type = document.getElementById("expType").value;
+      const amount = document.getElementById("expAmount").value.trim();
+      const detail = type === "Teacher Salary" ? document.getElementById("expTeacherNameSelect").value : document.getElementById("expDescInput").value.trim();
+      const month = document.getElementById("expMonthSelect").value; // Using manager month for saving logic as default
+
+      if(!type || !amount) { window.alert("Fill expense details."); return; }
+      
+      const expId = Date.now().toString();
+      await set(ref(db, `expenses/${month}/${expId}`), { id: expId, date: getTodayFormattedDate(), type: type, detail: detail || "Others", amount: amount });
+      
+      window.alert("Expense saved.");
+      await buildCache(); // refresh cache
+      document.getElementById("generateExpenseSheetBtn").click();
+    });
+
+    document.getElementById('generateExpenseSheetBtn').addEventListener('click', async () => {
+      await buildCache();
+      const month = document.getElementById('expGenMonthSelect').value;
+      const expenses = fullDbCache.expenses ? fullDbCache.expenses[month] : null;
+      const tbody = document.getElementById('expSheetBody');
+      tbody.innerHTML = "";
+      
+      if (!expenses) { tbody.innerHTML = `<tr><td colspan="5">No expenses found.</td></tr>`; } 
+      else {
+        Object.entries(expenses).forEach(([id, ex]) => {
+          const exData = encodeURIComponent(JSON.stringify({...ex, month: month, id: id}));
+          tbody.innerHTML += `<tr><td>${ex.date}</td><td>${ex.type}</td><td>${ex.detail || '-'}</td><td>₹${ex.amount}</td><td><button class="btn-primary btn-blue" style="padding:4px 8px; font-size:10px; margin:0 2px;" onclick="window.openEditExp('${exData}')">✏️</button><button class="btn-sm-del" style="padding:4px 8px; font-size:10px; margin:0 2px;" onclick="window.deleteExp('${month}', '${id}')">🗑️</button></td></tr>`;
+        });
+      }
+      document.getElementById('expenseSheetDisplayArea').style.display = 'block';
+    });
+
+    window.openEditExp = function(encodedData) {
+      const data = JSON.parse(decodeURIComponent(encodedData));
+      document.getElementById('editExpId').value = data.id; document.getElementById('editExpMonth').value = data.month; document.getElementById('editExpDate').value = data.date; document.getElementById('editExpType').value = data.type; document.getElementById('editExpDesc').value = data.detail; document.getElementById('editExpAmount').value = data.amount;
+      window.openModal('editExpenseModal');
+    };
+
+    document.getElementById('saveExpenseEditBtn').addEventListener('click', async () => {
+      const id = document.getElementById('editExpId').value; const month = document.getElementById('editExpMonth').value;
+      const updates = {};
+      updates[`expenses/${month}/${id}/type`] = document.getElementById('editExpType').value; updates[`expenses/${month}/${id}/detail`] = document.getElementById('editExpDesc').value; updates[`expenses/${month}/${id}/amount`] = document.getElementById('editExpAmount').value;
+      await update(ref(db), updates);
+      window.closeModal('editExpenseModal'); document.getElementById('generateExpenseSheetBtn').click();
+    });
+
+    window.deleteExp = async function(month, id) {
+      if(confirm("Delete expense?")) { await remove(ref(db, `expenses/${month}/${id}`)); document.getElementById('generateExpenseSheetBtn').click(); }
+    };
+
+    // 4. STUDENT DIRECTORY & SEARCH DROPDOWN
+    window.filterAdminStudentByClass = function(cls, el) {
+      selectedAdminClassFilter = cls;
+      document.querySelectorAll(".class-chip").forEach(c => c.classList.remove("active"));
+      if(el) el.classList.add("active");
+      window.renderAdminStudentsDirectory();
+    };
+
+    window.renderAdminStudentsDirectory = function() {
+      const container = document.getElementById("adminStudentsDirectoryContainer");
+      container.innerHTML = "";
+      let count = 0;
+
+      allStudents.forEach(s => {
+        if(selectedAdminClassFilter === "All" || cleanClassStr(s.class) === cleanClassStr(selectedAdminClassFilter)) {
+          count++;
+          const pass = fullDbCache.users && fullDbCache.users[s.admn] ? fullDbCache.users[s.admn].password : "MM";
+          container.innerHTML += `
+            <div class="student-grid-card" onclick="window.openStudentProfileModal('${s.admn}')">
+              <img src="${s.photo || 'https://via.placeholder.com/150'}" class="student-avatar" alt="Avatar">
+              <div style="flex:1;">
+                <div style="font-size:13px; font-weight:800;">${s.name}</div>
+                <div style="font-size:11px; color:var(--text-muted);">ID: ${s.admn} | Class: ${s.class} | Pass: <b>${pass}</b></div>
+                <div style="font-size:10px; font-weight:700; color:#0288d1; margin-top:2px;">Phone: ${s.phone || '-'} | PTS: ${s.points || 0}</div>
+              </div>
+              <div style="font-size:16px;">✏️</div>
+            </div>
+          `;
+        }
+      });
+      document.getElementById("adminStudentCountText").innerText = count;
+      if(count === 0) container.innerHTML = `<p style="font-size:12px; color:var(--text-muted);">No students found.</p>`;
+    };
+
+    document.getElementById('aStudentSearch').addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      const resultsBox = document.getElementById('aSearchResultsBox');
+      if (!q) { resultsBox.style.display = 'none'; return; }
+      const filtered = allStudents.filter(s => s.name.toLowerCase().includes(q) || String(s.admn).includes(q));
+      resultsBox.innerHTML = "";
+      if (filtered.length === 0) { resultsBox.innerHTML = `<div class="search-result-item">No students found</div>`; } 
+      else {
+        filtered.forEach(s => {
+          const div = document.createElement("div"); div.className="search-result-item"; div.innerText = `${s.name} (ID: ${s.admn} | Class: ${s.class})`;
+          div.onclick = () => { document.getElementById('aStudentSearch').value = ""; resultsBox.style.display = "none"; window.openStudentProfileModal(s.admn); };
+          resultsBox.appendChild(div);
+        });
+      }
+      resultsBox.style.display = 'block';
+    });
+
+    // Bulk Search utility setup
+    function setupSearch(inputId, resultsId, hiddenId) {
+      document.getElementById(inputId).addEventListener('input', (e) => {
+        const q = e.target.value.toLowerCase().trim(); const res = document.getElementById(resultsId);
+        if(!q) { res.style.display='none'; return; }
+        const f = allStudents.filter(s => s.name.toLowerCase().includes(q) || String(s.admn).includes(q));
+        res.innerHTML = "";
+        f.forEach(s => {
+          const div = document.createElement("div"); div.className="search-result-item"; div.innerText = `${s.name} (${s.admn})`;
+          div.onclick = () => { document.getElementById(inputId).value = s.name; document.getElementById(hiddenId).value = s.admn; res.style.display="none"; };
+          res.appendChild(div);
+        });
+        res.style.display = 'block';
+      });
+    }
+    setupSearch("feeStudentSearchInput", "feeSearchResultsBox", "feeSelectedStudentAdmn");
+    setupSearch("cardSearchInput", "cardSearchResultsBox", "cardSelectedAdmn");
+    setupSearch("rmFeeSearchInput", "rmFeeSearchResultsBox", "rmFeeSelectedAdmn");
+    setupSearch("attTrackSearchInput", "attTrackResultsBox", "attTrackSelectedAdmn");
+
+    // 5. FEES ENTRY & TRACKING ENGINE
+    window.calculateAdminEntryTabAnalytics = function() {
+      const today = new Date();
+      document.getElementById("entryTabLiveDate").innerText = today.toLocaleDateString('en-IN', { weekday:'short', year:'numeric', month:'short', day:'numeric' });
+      const curMonth = getAutoMonthName();
+      document.getElementById("entryCurrentMonthName1").innerText = curMonth; document.getElementById("entryCurrentMonthName2").innerText = curMonth;
+
+      const currentMonthYearStr = `${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
+      let totalCollected = 0; let totalDue = 0;
+      const academicMonths = ["June","July","August","September","October","November","December","January","February","March","April","May"];
+      const activeMonths = []; for(let m of academicMonths) { activeMonths.push(m); if(m === curMonth) break; }
+
+      const allEntries = fullDbCache.fees_entries || {};
+      Object.values(allEntries).forEach(stEntries => {
+        Object.values(stEntries).forEach(e => {
+          if(e.date && e.date.split('/').slice(1).join('/') === currentMonthYearStr) totalCollected += parseFloat(e.amount)||0;
+        });
+      });
+
+      const matrix = fullDbCache.fees_matrix || {};
+      allStudents.forEach(st => {
+        const rate = ["Nursery", "Jr. KG", "Sr. KG"].includes(cleanClassStr(st.class)) ? 400 : 500;
+        activeMonths.forEach(mName => {
+          if(!matrix[st.admn] || !matrix[st.admn][mName] || !matrix[st.admn][mName].paid) totalDue += rate;
+        });
+      });
+
+      document.getElementById("entryCollectedAmountText").innerText = `₹${totalCollected.toLocaleString()}`;
+      document.getElementById("entryTotalDueAmountText").innerText = `₹${totalDue.toLocaleString()}`;
+    };
+
+    document.getElementById("submitFeeEntryBtn").addEventListener("click", async () => {
+      const admn = document.getElementById("feeSelectedStudentAdmn").value;
+      const total = document.getElementById("feeModalTotal").value;
+      const mode = document.getElementById("feeModalMode").value;
+      const chks = Array.from(document.querySelectorAll(".fee-chk:checked")).map(c => c.value);
+
+      if(!admn || chks.length === 0 || !total) { window.alert("Fill details properly."); return; }
+
+      const dateStr = getTodayFormattedDate(); const entryId = Date.now().toString();
+      const updates = {};
+      updates[`fees_entries/${admn}/${entryId}`] = { id: entryId, admn: admn, types: chks, amount: total, mode: mode, date: dateStr };
+      chks.forEach(f => updates[`fees_matrix/${admn}/${f}`] = { paid: true, date: dateStr, amount: total });
+
+      await update(ref(db), updates);
+      await buildCache();
+      
+      const stName = allStudents.find(s=>s.admn===admn)?.name || "Student";
+      lastGeneratedReceipt = { phone: allStudents.find(s=>s.admn===admn)?.phone, text: `*M.M ISLAMIC ENGLISH SCHOOL - FEE RECEIPT*\n\nStudent: *${stName}*\nFee For: *${chks.join(", ")}*\nAmount Paid: *₹${total}*\nDate: *${dateStr}*\nStatus: *SUCCESSFUL*` };
+      
+      document.getElementById("feeSubmittedStatusBox").style.display = "block";
+      window.calculateAdminEntryTabAnalytics();
+    });
+
+    document.getElementById("sendWhatsappReceiptBtn").addEventListener("click", () => {
+      if(lastGeneratedReceipt && lastGeneratedReceipt.phone) {
+        window.open(`https://api.whatsapp.com/send?phone=91${lastGeneratedReceipt.phone}&text=${encodeURIComponent(lastGeneratedReceipt.text)}`, "_blank");
+      }
+    });
+
+    let redTap = 0, blueTap = 0, rTimer, bTimer;
+    window.handleRedCardTouchTap = function() { redTap++; clearTimeout(rTimer); if(redTap===3){ redTap=0; window.renderFeesDueDetailTable("ALL", "UNPAID"); window.openModal("feesDueDetailModal"); } else rTimer=setTimeout(()=>redTap=0, 800); };
+    window.handleBlueCardTouchTap = function() { blueTap++; clearTimeout(bTimer); if(blueTap===3){ blueTap=0; window.renderFeesDueDetailTable("ALL", "PAID"); window.openModal("feesDueDetailModal"); } else bTimer=setTimeout(()=>blueTap=0, 800); };
+
+    window.renderFeesDueDetailTable = function(selectedClass, mode = "UNPAID") {
+      const tbody = document.getElementById("dueModalTableBody");
+      document.getElementById("feesModalHeaderTitle").innerText = mode === "UNPAID" ? "⚠️ Unpaid Breakdown" : "✔ Paid Breakdown";
+      const activeMonths = []; const curMonth = getAutoMonthName();
+      for(let m of ["June","July","August","September","October","November","December","January","February","March","April","May"]) { activeMonths.push(m); if(m === curMonth) break; }
+
+      let grandTotal = 0; let resultList = [];
+      const matrix = fullDbCache.fees_matrix || {};
+
+      allStudents.forEach(st => {
+        if(selectedClass !== "ALL" && cleanClassStr(st.class) !== cleanClassStr(selectedClass)) return;
+        const rate = ["Nursery", "Jr. KG", "Sr. KG"].includes(cleanClassStr(st.class)) ? 400 : 500;
+        let mMatch = []; let sTotal = 0;
+        
+        activeMonths.forEach(mName => {
+          const isPaid = matrix[st.admn] && matrix[st.admn][mName] && matrix[st.admn][mName].paid;
+          if(mode === "UNPAID" && !isPaid) { mMatch.push(mName); sTotal += rate; }
+          else if(mode === "PAID" && isPaid) { mMatch.push(mName); sTotal += (parseFloat(matrix[st.admn][mName].amount) || rate); }
+        });
+        if(sTotal > 0) { grandTotal += sTotal; resultList.push({ name: st.name, std: st.class, str: mMatch.join(", "), amt: sTotal }); }
+      });
+
+      resultList.sort((a,b)=>a.name.localeCompare(b.name));
+      tbody.innerHTML = "";
+      if(resultList.length === 0) tbody.innerHTML = `<tr><td colspan="5">No records found.</td></tr>`;
+      else {
+        resultList.forEach((st, idx) => {
+          tbody.innerHTML += `<tr><td>${idx+1}</td><td style="text-align:left;">${st.name}</td><td>${st.std}</td><td style="text-align:left; font-size:10px;">${st.str}</td><td><b>₹${st.amt}</b></td></tr>`;
+        });
+      }
+      document.getElementById("dueModalTotalSummaryText").innerText = `Total Students: ${resultList.length} | Amount: ₹${grandTotal.toLocaleString()}`;
+    };
+
+    // 6. PDF EXPORT MATRIX
+    document.getElementById("trackFeesBtn").addEventListener("click", () => {
+      const std = document.getElementById("trackStdSelect").value;
+      const tbody = document.getElementById("matrixTableBody");
+      const students = allStudents.filter(s => cleanClassStr(s.class) === cleanClassStr(std));
+      const months = ["June","July","August","September","October","November","December","January","February","March","April","May","1st Term","1st Exam","2nd Term","2nd Exam"];
+      const matrix = fullDbCache.fees_matrix || {};
+
+      tbody.innerHTML = "";
+      students.forEach(st => {
+        let rowHtml = `<tr><td style="text-align:left;">${st.name}</td>`;
+        months.forEach(m => { rowHtml += `<td class="${matrix[st.admn]&&matrix[st.admn][m]?.paid?'paid-cell':''}">${matrix[st.admn]&&matrix[st.admn][m]?.paid?'✔':'-'}</td>`; });
+        tbody.innerHTML += rowHtml + "</tr>";
+      });
+      document.getElementById("trackMatrixArea").style.display = "block";
+    });
+
+    document.getElementById("generatePdfBtn").addEventListener("click", () => {
+      const { jsPDF } = window.jspdf; const pdf = new jsPDF('l', 'mm', 'a4');
+      const std = document.getElementById("trackStdSelect").value;
+      const students = allStudents.filter(s => cleanClassStr(s.class) === cleanClassStr(std));
+      const matrix = fullDbCache.fees_matrix || {};
+      const months = ["June","July","August","September","October","November","December","January","February","March","April","May","1st Term","1st Exam","2nd Term","2nd Exam"];
+
+      pdf.setFont("helvetica", "bold"); pdf.setFontSize(16); pdf.text("M.M ISLAMIC ENGLISH SCHOOL", 148, 15, { align: "center" });
+      pdf.setFontSize(11); pdf.text(`CLASS ${std.toUpperCase()} - FEES STATUS MATRIX REPORT`, 148, 22, { align: "center" });
+
+      let startY = 30; const colWidth = 14; const nameWidth = 45;
+      pdf.setFontSize(8); pdf.setFillColor(30, 41, 59); pdf.rect(10, startY, nameWidth + (months.length * colWidth), 8, 'F');
+      pdf.setTextColor(255, 255, 255); pdf.text("Student Name", 13, startY + 5.5);
+      months.forEach((m, idx) => pdf.text(m.substring(0,3), 10 + nameWidth + (idx*colWidth) + 2, startY + 5.5));
+      
+      startY += 8;
+      students.forEach((st, rIdx) => {
+        if (startY > 185) { pdf.addPage(); startY = 20; }
+        if (rIdx % 2 === 0) { pdf.setFillColor(248, 250, 252); pdf.rect(10, startY, nameWidth + (months.length * colWidth), 8, 'F'); }
+        pdf.setTextColor(30, 41, 59); pdf.setFont("helvetica", "bold"); pdf.text(st.name.substring(0,20), 13, startY + 5.5);
+        
+        pdf.setFont("helvetica", "normal");
+        months.forEach((m, cIdx) => {
+          if (matrix[st.admn] && matrix[st.admn][m]?.paid) { pdf.setTextColor(22, 163, 74); pdf.text("P", 10 + nameWidth + (cIdx * colWidth) + 5, startY + 5.5); } 
+          else { pdf.setTextColor(220, 38, 38); pdf.text("-", 10 + nameWidth + (cIdx * colWidth) + 5, startY + 5.5); }
+        });
+        startY += 8;
+      });
+      pdf.save(`Class_${std}_Fees_Matrix.pdf`);
+    });
+
+    // 7. TEACHER LEADERBOARD & HOME CARDS
+    window.renderAdminHomeTeacherboardCards = function() {
+      const c = document.getElementById("adminHomeTeacherboardCardsContainer");
+      const list = Object.values(allTeachers).filter(t => t.name).sort((a,b)=>(b.points||0)-(a.points||0));
+      c.innerHTML = "";
+      list.forEach((t, idx) => {
+        c.innerHTML += `
+          <div class="tb-table-card shuffle-anim">
+            <div><span style="font-weight:900; color:#7c3aed; margin-right:8px;">#${idx+1}</span><span style="font-weight:800; font-size:13px;">${t.name}</span></div>
+            <div style="font-size:14px; font-weight:900; color:#10b981;">${t.points||0} PTS</div>
+          </div>
+        `;
+      });
+    };
+
+    // 8. OTHER ORIGINAL COMPONENTS (Briefed via window attach for HTML linking)
+    window.openStudentProfileModal = function(admn) {
+      const student = allStudents.find(s=>s.admn===admn);
+      if(!student) return;
+      document.getElementById("profStudentAdmn").value = student.admn; document.getElementById("profAdmnDisplay").value = student.admn; document.getElementById("profNameInput").value = student.name; document.getElementById("profClassSelect").value = cleanClassStr(student.class); document.getElementById("profPhoneInput").value = student.phone || ""; document.getElementById("profPointsInput").value = student.points || 0; document.getElementById("profPasswordInput").value = fullDbCache.users && fullDbCache.users[admn] ? fullDbCache.users[admn].password : "MM"; document.getElementById("profAvatarDisplay").src = student.photo || "https://via.placeholder.com/150";
+      window.openModal("studentProfileModal");
+    };
+
+    document.getElementById("updateStudentProfileBtn").addEventListener("click", async () => {
+      const oldAdmn = document.getElementById("profStudentAdmn").value; const newAdmn = document.getElementById("profAdmnDisplay").value;
+      const updates = {};
+      updates[`students/${newAdmn}`] = { admn: newAdmn, name: document.getElementById("profNameInput").value, class: document.getElementById("profClassSelect").value, phone: document.getElementById("profPhoneInput").value, points: parseInt(document.getElementById("profPointsInput").value)||0 };
+      updates[`users/${newAdmn}`] = { password: document.getElementById("profPasswordInput").value, role: "student", admn: newAdmn, assignedClass: document.getElementById("profClassSelect").value };
+      if(oldAdmn !== newAdmn) { updates[`students/${oldAdmn}`] = null; updates[`users/${oldAdmn}`] = null; }
+      await update(ref(db), updates); await buildCache(); window.renderAdminStudentsDirectory(); window.closeModal("studentProfileModal"); window.alert("Profile Updated");
+    });
+
+    window.deleteStudent = async function(admn) {
+      if(confirm(`Delete ID ${admn}?`)) { await update(ref(db), { [`students/${admn}`]:null, [`users/${admn}`]:null }); await buildCache(); window.renderAdminStudentsDirectory(); window.closeModal("studentProfileModal"); window.closeModal("removeStudentModal"); }
+    };
+
+    window.exportFullDatabaseJson = function() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(fullDbCache, null, 2));
+      const downloadAnchor = document.createElement('a'); downloadAnchor.setAttribute("href", dataStr); downloadAnchor.setAttribute("download", `firebase_backup_${getTodayKey()}.json`); document.body.appendChild(downloadAnchor); downloadAnchor.click(); downloadAnchor.remove();
+    };
+
+    // Global Utilities
+    window.switchTab = function(tabId, el) {
+      document.querySelectorAll('.tab-section').forEach(t => t.classList.remove('active', 'animate-in'));
+      const target = document.getElementById(tabId); target.classList.add('active'); setTimeout(() => target.classList.add('animate-in'), 10);
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); if(el && el.classList.contains('nav-item')) el.classList.add('active');
+    };
+    window.openModal = function(id) { document.getElementById('leftDrawer').style.left = '-80%'; document.getElementById('drawerOverlay').style.display='none'; document.getElementById(id).classList.add('active'); };
+    window.closeModal = function(id) { document.getElementById(id).classList.remove('active'); };
+    window.alert = function(msg) { document.getElementById("customAlertMessage").innerText = msg; document.getElementById("customAlertModal").classList.add("active"); };
+
+    document.getElementById('hamburgerBtn').addEventListener('click', () => { document.getElementById('leftDrawer').style.left = '0'; document.getElementById('drawerOverlay').style.display='block'; });
+    document.getElementById('closeDrawerBtn').addEventListener('click', () => { document.getElementById('leftDrawer').style.left = '-80%'; document.getElementById('drawerOverlay').style.display='none'; });
+    document.getElementById('threeDotBtn').addEventListener('click', () => document.getElementById('menuDropdown').classList.toggle('active'));
+    document.getElementById('logoutBtnTop').addEventListener('click', () => { localStorage.clear(); window.location.replace('../login.html'); });
+    document.getElementById('logoutBtnDrawer').addEventListener('click', () => { localStorage.clear(); window.location.replace('../login.html'); });
+
+    // Notifications Engine
+    function renderNotifications(notifs) {
+      const c = document.getElementById('notifListContainer'); const b = document.getElementById('notifBadge');
+      if(!notifs || notifs.length === 0) return;
+      b.style.display = 'block'; b.innerText = notifs.length; c.innerHTML = "";
+      notifs.forEach(n => { c.innerHTML += `<div style="padding:12px; border-bottom:1px solid var(--border-color); background:rgba(0,0,0,0.02); margin-bottom:8px;"><div style="font-weight:800; font-size:13px; color:#16a34a;">${n.title}</div><div style="font-size:11px; margin-top:4px;">${n.message}</div><div style="font-size:9px; color:var(--text-muted); margin-top:4px;">${new Date(n.timestamp).toLocaleString()}</div></div>`; });
+    }
+    document.getElementById('notifBtn').addEventListener('click', () => { window.openModal('notificationsModal'); document.getElementById('notifBadge').style.display='none'; });
+
+    // Dark Mode Engine
+    document.getElementById("darkModeCheckbox").addEventListener("change", (e) => { document.body.classList.toggle("dark-mode", e.target.checked); localStorage.setItem("darkMode", e.target.checked ? "enabled" : "disabled"); });
+    if(localStorage.getItem("darkMode") === "enabled") { document.body.classList.add("dark-mode"); document.getElementById("darkModeCheckbox").checked = true; }
+
+    // Boot App
+    initDashboard();
+  </script>
+</body>
+</html>
