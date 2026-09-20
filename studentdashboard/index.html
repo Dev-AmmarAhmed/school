@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Student Portal - M.M ISLAMIC ENGLISH SCHOOL</title>
+
+  <!-- PWA MANIFEST & APP ICON -->
+  <meta name="theme-color" content="#0369a1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="icon" type="image/jpeg" href="https://raw.githubusercontent.com/Dev-AmmarAhmed/mm-islamic-student-dashboard/6ffc7a916bc2902c4baea4a123634fbe732647b1/book-floating-cartoon-vector-icon-illustration-education-object-icon-isolated-flat-vector_138676-13661.jpg">
+  
+  <!-- DECOUPLED STYLESHEET -->
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="student-mode theme-navy">
+
+  <!-- HEADER & NAVIGATION -->
+  <header id="topBar" class="app-header">
+    <button id="hamburgerBtn" class="icon-btn">☰</button>
+    
+    <div class="header-title-box">
+      <div class="header-title">M.M ISLAMIC ENGLISH SCHOOL</div>
+      <div class="header-subtitle" id="portalRoleSubHeader">STUDENT DASHBOARD PRO</div>
+      <div id="studentStarsContainer" class="star-counter-badge" onclick="window.toggleStarPointsDisplay()">
+        <span id="studentStarIcon">⭐</span>
+        <span id="studentStarText">0 Stars</span>
+        <span style="font-size:12px; opacity:0.9;">🔄</span>
+      </div>
+    </div>
+
+    <!-- NOTIFICATIONS BELL -->
+    <button id="notifBtn" class="icon-btn" style="position: relative; margin-right: 8px;">
+      🔔 <span id="notifBadge" style="display:none; position:absolute; top:-5px; right:-5px; background:#dc2626; color:white; border-radius:50%; padding:2px 6px; font-size:9px; font-weight:bold;">0</span>
+    </button>
+    <button id="threeDotBtn" class="icon-btn">⋮</button>
+
+    <div id="menuDropdown" class="menu-dropdown">
+      <div class="menu-item logout" id="logoutBtnTop">🚪 Logout</div>
+    </div>
+  </header>
+
+  <!-- LEFT DRAWER -->
+  <div id="drawerOverlay" class="left-drawer-overlay"></div>
+  <div id="leftDrawer" class="left-drawer">
+    <div class="drawer-header">
+      <span>⚙️ Control & Settings</span>
+      <span class="close-modal" id="closeDrawerBtn">✕</span>
+    </div>
+
+    <div class="dark-mode-toggle-row">
+      <span>🌙 Dark Mode</span>
+      <label class="switch">
+        <input type="checkbox" id="darkModeCheckbox">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="drawer-body">
+      <div style="padding: 10px 18px 4px 18px; font-size:11px; font-weight:800; color:var(--text-muted);">STUDENT ACCOUNT</div>
+      <div class="drawer-item" onclick="window.openModal('studentProfileDrawerModal')">👤 My Profile & Fees Card</div>
+      <div class="drawer-item" onclick="window.openModal('studentUpdateModal')">✏️ Update Profile Info</div>
+      
+      <div style="padding: 12px 18px 4px 18px; font-size:11px; font-weight:800; color:var(--text-muted); border-top:1px solid var(--border-color); margin-top:8px;">🎨 PROFESSIONAL THEME PALETTE</div>
+      <div class="drawer-item" onclick="window.setAppTheme('emerald')" style="font-size:12px; padding:10px 18px;">🌿 Royal Emerald & Gold</div>
+      <div class="drawer-item" onclick="window.setAppTheme('navy')" style="font-size:12px; padding:10px 18px;">🌊 Classic Navy & Blue</div>
+      <div class="drawer-item" onclick="window.setAppTheme('slate')" style="font-size:12px; padding:10px 18px;">🏛️ Slate & Crimson Tech</div>
+      
+      <div class="drawer-item logout" id="logoutBtnDrawer" style="margin-top: auto; color: #dc2626 !important; border-top: 1px solid var(--border-color);">🚪 Logout Account</div>
+    </div>
+  </div>
+
+  <!-- MAIN DASHBOARD VIEWS -->
+  <main id="mainContainer" class="main-content">
+
+    <!-- HOME TAB -->
+    <section id="studentTabHome" class="tab-section active animate-in">
+      <div class="card" style="text-align:center; padding:24px 16px;">
+        <img id="sHomeAvatar" src="https://via.placeholder.com/150" style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid #0288d1; margin-bottom:10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+        <h2 id="sHomeName" style="font-size:18px; font-weight:900; color:#0288d1;">Loading Profile...</h2>
+        <span id="sHomeClassBadge" class="class-badge" style="background:#0288d1; margin-top:4px;">Class -</span>
+        <div style="font-size:13px; font-weight:800; color:#7c3aed; margin-top:6px;" id="sHomeRankText">Class Rank: #-</div>
+
+        <!-- DAILY REWARDS SYSTEM -->
+        <div class="daily-reward-card" style="position: relative;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <div style="font-size:11px; font-weight:800; color:#d97706; text-transform:uppercase; letter-spacing:0.5px;">🎁 DAILY REWARD POINTS</div>
+            <a href="javascript:void(0)" onclick="window.openModal('weeklyRewardDetailsModal')" style="font-size:11px; font-weight:800; color:#0288d1; text-decoration:none;">Details &rarr;</a>
+          </div>
+          <h3 id="sDailyRewardTitleText" style="font-size:16px; font-weight:900; color:var(--text-color); margin:4px 0;">+50 Points Today</h3>
+          <p id="sDailyRewardSubText" style="font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:10px;">Claim your daily bonus login points!</p>  
+          
+          <button id="sClaimDailyPointsBtn" class="btn-primary btn-orange" style="margin-top:0; padding:10px; font-size:13px;">
+            🎁 Claim Today's Points
+          </button>
+          
+          <div id="sDailyClaimedBadge" style="display:none; padding:8px; border-radius:12px; background:rgba(34, 197, 94, 0.2); border:1px solid #16a34a; color:#16a34a; font-weight:800; font-size:12px;">
+            ✔ Claimed for Today!
+          </div>
+        </div>
+
+        <!-- ATTENDANCE STATS -->
+        <div class="stats-grid" style="margin-top:16px;">
+          <div class="stat-card red"><span>Absent Days</span><h3 id="sHomeAbsentCount">0</h3></div>
+          <div class="stat-card" style="background:linear-gradient(135deg, #16a34a 0%, #15803d 100%);"><span>Present Days</span><h3 id="sHomePresentCount">0</h3></div>
+        </div>
+
+        <!-- REALTIME FEES TRACKER -->
+        <div id="sHomeDuesContainer" style="margin-top:16px;">
+          <div id="sHomeDuesClearedBox" style="display:none; padding:12px; border-radius:14px; background:rgba(34, 197, 94, 0.15); border:1px solid #16a34a; color:#16a34a; font-weight:800; font-size:13px;">
+            All Dues Cleared ✔
+          </div>
+          
+          <div id="sHomeDuesPendingBox" style="display:none; padding:16px; border-radius:16px; background:rgba(220, 38, 38, 0.08); border:1.5px solid #dc2626; text-align:center;">
+            <div style="font-size:12px; font-weight:800; color:#dc2626; text-transform:uppercase;">⚠️ Pending Fees Action Required</div>
+            <h3 id="sHomeDueAmountText" style="font-size:22px; font-weight:900; color:#dc2626; margin:6px 0;">Fees Due: ₹0</h3>
+            <p id="sHomeDueBreakdownText" style="font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:12px;">Pending for: -</p>
+            
+            <button id="sPayFeesNowBtn" class="btn-primary btn-green" style="font-size:15px; padding:14px;">
+              💳 Pay Fees Now (UPI)
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ATTENDANCE TAB -->
+    <section id="studentTabAttend" class="tab-section">
+      <div class="card">
+        <div class="card-title">My Attendance Record</div>
+        <label>Select Month:</label>
+        <select id="sAttMonthSelect">
+          <option value="June">June</option><option value="July">July</option><option value="August" selected>August</option>
+          <option value="September">September</option><option value="October">October</option><option value="November">November</option>
+          <option value="December">December</option><option value="January">January</option><option value="February">February</option>
+          <option value="March">March</option><option value="April">April</option><option value="May">May</option>
+        </select>
+        <button id="sViewAttendanceBtn" class="btn-primary btn-blue">View Attendance</button>
+      </div>
+
+      <div class="card" id="sAttReportArea" style="display:none;">
+        <div id="sAttReportContent"></div>
+      </div>
+    </section>
+
+    <!-- STUDY MATERIALS TAB -->
+    <section id="studentTabStudy" class="tab-section">
+      <div class="sub-nav-tabs">
+        <div class="sub-tab-btn active" id="subTabMatBtn" onclick="window.switchStudentStudySubTab('mat')">📁 Study Materials</div>
+        <div class="sub-tab-btn" id="subTabHwBtn" onclick="window.switchStudentStudySubTab('hw')">📚 Homework</div>
+      </div>
+
+      <div id="sStudyMatSubSection">
+        <div class="card">
+          <div class="card-title">Class Study Materials</div>
+          <div id="sStudyMatContainer">Loading materials...</div>
+        </div>
+      </div>
+
+      <div id="sHomeworkSubSection" style="display:none;">
+        <div class="card">
+          <div class="card-title">Class Homework Assignments</div>
+          <div id="sHomeworkContainer">Loading homework...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PERFORMANCE TAB -->
+    <section id="studentTabPerform" class="tab-section">
+      <div class="card" style="text-align:center; background:var(--header-bg); color:white;">
+        <div style="font-size:13px; font-weight:800; opacity:0.9;">My Performance Rank</div>
+        <h1 id="sPerformRankBig" style="font-size:36px; font-weight:900; margin:6px 0; color:white !important;">#-</h1>
+        <div id="sPerformTotalPtsChip" class="pts-chip" style="background:#fbbf24; color:#0f172a !important; display:inline-block;">Total Points: 0</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🏆 Class Leaderboard</div>
+        <div id="sLeaderboardContainer" style="background:var(--card-bg); border-radius:14px; border:1px solid var(--border-color); overflow:hidden;">Loading Leaderboard...</div>
+      </div>
+    </section>
+
+    <!-- TESTS TAB -->
+    <section id="studentTabTest" class="tab-section">
+      <div class="card">
+        <div class="card-title">📝 Available / Due Online Tests</div>
+        <div id="sDueOnlineTestsContainer">Loading due tests...</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">My Test Scores History</div>
+        <label>Select Month:</label>
+        <select id="sTestMonthSelect">
+          <option value="ALL">All Months</option>
+          <option value="June">June</option><option value="July">July</option><option value="August" selected>August</option>
+          <option value="September">September</option><option value="October">October</option><option value="November">November</option>
+          <option value="December">December</option><option value="January">January</option><option value="February">February</option>
+          <option value="March">March</option><option value="April">April</option><option value="May">May</option>
+        </select>
+        <button id="sViewTestScoresBtn" class="btn-primary btn-blue">View Scores</button>
+      </div>
+
+      <div class="card" id="sTestScoresDisplayArea" style="display:none;">
+        <div class="table-container">
+          <table style="min-width:100%;">
+            <thead><tr><th>Date</th><th>Test Name</th><th>Obtained</th><th>Total</th><th>%</th></tr></thead>
+            <tbody id="sTestScoresTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BOTTOM NAVIGATION -->
+  <nav id="bottomNav" class="bottom-nav">
+    <div class="nav-item active" onclick="window.switchTab('studentTabHome', this)"><div class="nav-icon">🏠</div>Home</div>
+    <div class="nav-item" onclick="window.switchTab('studentTabAttend', this)"><div class="nav-icon">📅</div>Attend</div>
+    <div class="nav-item" onclick="window.switchTab('studentTabStudy', this)"><div class="nav-icon">📖</div>Study</div>
+    <div class="nav-item" onclick="window.switchTab('studentTabPerform', this)"><div class="nav-icon">⭐</div>Perform</div>
+    <div class="nav-item" onclick="window.switchTab('studentTabTest', this)"><div class="nav-icon">📋</div>Test</div>
+  </nav>
+
+  <!-- ====================================================================
+       MODALS SYSTEM
+       ==================================================================== -->
+
+  <!-- NOTIFICATIONS MODAL -->
+  <div id="notificationsModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span>🔔 Recent Notifications</span>
+        <span class="close-modal" onclick="window.closeModal('notificationsModal')">✕</span>
+      </div>
+      <div class="modal-body" id="notifListContainer" style="max-height: 60vh; overflow-y: auto;">
+        <p style="font-size: 12px; color: var(--text-muted); text-align: center;">No new notifications.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUSTOM SELECT SHEET MODAL -->
+  <div id="customSelectModal" class="modal-overlay" style="z-index: 100000;">
+    <div class="modal-content" style="max-width: 380px; border-radius: 24px; padding: 0; overflow: hidden;">
+      <div class="modal-header" style="background: var(--header-bg); padding: 16px 20px;">
+        <span id="customSelectTitle" style="font-size: 15px; font-weight: 800; color: #ffffff;">Select Option</span>
+        <span class="close-modal" onclick="window.closeModal('customSelectModal')">✕</span>
+      </div>
+      <div id="customSelectOptionsContainer" style="max-height: 50vh; overflow-y: auto; padding: 10px 14px;"></div>
+    </div>
+  </div>
+
+  <!-- CUSTOM ALERT MODAL -->
+  <div id="customAlertModal" class="modal-overlay" style="z-index: 99999;">
+    <div class="modal-content" style="max-width: 320px; text-align: center; padding: 22px; border-radius: 20px;">
+      <h3 style="color: #0288d1; font-size: 15px; font-weight: 800; margin-bottom: 3px; letter-spacing: 0.3px;">M.M ISLAMIC ENGLISH SCHOOL</h3>
+      <p style="color: var(--text-muted); font-size: 11px; font-weight: 700; margin-bottom: 14px;">System says</p>
+      <div id="customAlertMessage" style="font-size: 13px; font-weight: 700; color: var(--text-color); margin-bottom: 22px; line-height: 1.4;"></div>
+      <button class="btn-primary btn-blue" style="margin-top:0; width:100%; padding:11px; border-radius: 12px;" onclick="window.closeModal('customAlertModal')">OK</button>
+    </div>
+  </div>
+
+  <!-- WEEKLY REWARDS CALENDAR MODAL -->
+  <div id="weeklyRewardDetailsModal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 520px; overflow-x: hidden;">
+      <div class="modal-header">
+        <span>📅 Daily Reward Schedule</span>
+        <span class="close-modal" onclick="window.closeModal('weeklyRewardDetailsModal')">✕</span>
+      </div>
+      <div class="modal-body" style="padding: 16px 12px;">
+        <div style="font-size:11px; font-weight:800; color:var(--text-muted); margin-bottom:8px; text-align:center;">WEEKDAYS REWARDS (+50 PTS)</div>
+        <div class="weekdays-grid-5" id="weekdaysGridTop"></div>
+        <div style="font-size:11px; font-weight:800; color:#d97706; margin-top:14px; margin-bottom:8px; text-align:center;">WEEKEND BONUS REWARDS (+80 PTS)</div>
+        <div class="weekends-grid-2" id="weekendsGridBottom"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STUDENT PROFILE & FEES CARD MODAL -->
+  <div id="studentProfileDrawerModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span>👤 My Profile & Fees Card</span>
+        <span class="close-modal" onclick="window.closeModal('studentProfileDrawerModal')">✕</span>
+      </div>
+      <div class="modal-body">
+        <label>Full Name:</label>
+        <input type="text" id="sProfFullName" disabled>
+        <label>Date of Birth:</label>
+        <input type="text" id="sProfDob" disabled>
+        <label>WhatsApp Number:</label>
+        <input type="text" id="sProfPhone" disabled>
+
+        <div style="margin-top:20px; border-top:2px dashed var(--border-color); padding-top:16px;">
+          <button id="sGenerateFeesCardBtn" class="btn-primary btn-orange">Generate Fees Card</button>
+        </div>
+        <div style="margin-top:16px; border-top:2px dashed var(--border-color); padding-top:16px;">
+          <button id="sMyPointHistoryBtn" class="btn-primary btn-purple">My Point History</button>
+        </div>
+
+        <div class="card" id="sFeesCardViewArea" style="display:none; margin-top:16px;">
+          <div class="table-container">
+            <table style="min-width: 100%;">
+              <thead><tr><th>Fee Type</th><th>Status</th><th>Payment Details</th></tr></thead>
+              <tbody id="sFeesCardBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- POINT HISTORY MODAL -->
+  <div id="studentPointHistoryModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span>⭐ Point History & Rank</span>
+        <span class="close-modal" onclick="window.closeModal('studentPointHistoryModal')">✕</span>
+      </div>
+      <div class="modal-body">
+        <div style="text-align:center; margin-bottom:14px; background:rgba(2, 136, 209, 0.08); padding:12px; border-radius:14px; border:1px solid #0288d1;">
+          <h3 id="historyTotalPoints" style="color:#0288d1; font-size:22px; font-weight:900;">0 PTS</h3>
+          <p id="historyStarText" style="font-size:12px; font-weight:800; color:#fbbf24;">Equivalent to 0 Stars ⭐</p>
+        </div>
+        <div class="table-container">
+          <table style="min-width: 100%;">
+            <thead><tr><th>Date</th><th>Activity / Test</th><th>Points</th></tr></thead>
+            <tbody id="sPointHistoryTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UPDATE PROFILE GRAYED MODAL -->
+  <div id="studentUpdateModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span>✏️ Update Profile</span>
+        <span class="close-modal" onclick="window.closeModal('studentUpdateModal')">✕</span>
+      </div>
+      <div class="modal-body">
+        <label>Full Name:</label>
+        <input type="text" id="sGrayedName" disabled>
+        <label>Date of Birth:</label>
+        <input type="text" id="sGrayedDob" disabled>
+        <label>WhatsApp Phone:</label>
+        <input type="text" id="sGrayedPhone" disabled>
+        <div style="margin-top:16px; padding:12px; border-radius:12px; background:rgba(239, 68, 68, 0.12); border:1px solid #ef4444; text-align:center; color:#ef4444; font-weight:800; font-size:12px;">
+          🔒 Contact Teacher to Update Your Profile
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIVE TEST MODAL -->
+  <div id="studentLiveTestModal" class="modal-overlay">
+    <div class="modal-content" style="max-width:520px;">
+      <div class="modal-header">
+        <span id="liveTestTitleDisplay">📝 Online Test</span>
+        <span class="close-modal" onclick="if(confirm('Are you sure? Test will be submitted!')) window.submitStudentLiveTest();">✕</span>
+      </div>
+      <div class="modal-body">
+        <div style="text-align:center;">
+          <div id="liveTestTimerBox" class="timer-badge">⏱️ Time Remaining: --:--</div>
+        </div>
+        <div id="liveTestQuestionsBox" style="max-height: 55vh; overflow-y: auto;"></div>
+        <button id="submitStudentTestBtn" onclick="window.submitStudentLiveTest()" class="btn-primary btn-green" style="margin-top:16px;">🚀 Submit Test</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       SCRIPTS
+       ==================================================================== -->
+  <script type="module">
+    import { safeDataFetch, processDailyClaim, listenForNotifications } from '../js/api.js';
+    import { ref, update, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { db } from '../js/firebaseconfig.js';
+
+    const userId = localStorage.getItem("loggedUser");
+    let studentData = null;
+    let allClassStudents = [];
+    let currentLiveTestObj = null;
+    let activeLiveTestTimer = null;
+    let studentStarDisplayMode = "star";
+
+    // 1. INITIALIZATION
+    async function initDashboard() {
+      if (!userId || localStorage.getItem("loggedRole") !== "student") {
+        return window.location.replace('../login.html');
+      }
+
+      studentData = await safeDataFetch(`students/${localStorage.getItem("studentAdmn")}`);
+      if (!studentData) {
+        window.alert("Student profile not found.");
+        return;
+      }
+
+      // Initial Renders
+      await fetchClassMates();
+      renderProfile();
+      checkDailyClaimStatus();
+      calculateRealtimeStudentDues();
+      loadStudentStudyMaterials();
+      loadStudentHomework();
+      loadStudentDueTests();
+
+      listenForNotifications(userId, renderNotifications);
+    }
+
+    async function fetchClassMates() {
+      const allStudentsMap = await safeDataFetch("students") || {};
+      const myClass = studentData.class.replace(/class\s*/i, "").trim();
+      allClassStudents = Object.values(allStudentsMap).filter(s => 
+        s && String(s.class).replace(/class\s*/i, "").trim() === myClass
+      );
+      allClassStudents.sort((a,b) => (b.points || 0) - (a.points || 0));
+      loadStudentLeaderboard();
+    }
+
+    // 2. UI RENDERERS
+    function renderProfile() {
+      document.getElementById('sHomeName').innerText = studentData.name;
+      document.getElementById('sHomeClassBadge').innerText = `Class ${studentData.class}`;
+      document.getElementById('sHomeAvatar').src = studentData.photo || "https://via.placeholder.com/150";
+
+      // Profile Modal Data
+      document.getElementById('sProfFullName').value = studentData.name;
+      document.getElementById('sProfDob').value = studentData.dob || "-";
+      document.getElementById('sProfPhone').value = studentData.phone || "-";
+      document.getElementById('sGrayedName').value = studentData.name;
+      document.getElementById('sGrayedDob').value = studentData.dob || "-";
+      document.getElementById('sGrayedPhone').value = studentData.phone || "-";
+
+      updateHeaderStarBadge();
+      updateRankDisplay();
+    }
+
+    function updateRankDisplay() {
+      const myRankIndex = allClassStudents.findIndex(s => String(s.admn) === String(studentData.admn));
+      const rankStr = myRankIndex !== -1 ? `#${myRankIndex + 1}` : "#-";
+      
+      document.getElementById("sHomeRankText").innerText = `Class Rank: ${rankStr}`;
+      document.getElementById("sPerformRankBig").innerText = rankStr;
+      
+      const pts = studentData.points || 0;
+      document.getElementById("sPerformTotalPtsChip").innerText = `Total Points: ${pts} (${Math.floor(pts / 10)} ⭐)`;
+    }
+
+    window.toggleStarPointsDisplay = function() {
+      studentStarDisplayMode = studentStarDisplayMode === "star" ? "points" : "star";
+      updateHeaderStarBadge();
+    };
+
+    function updateHeaderStarBadge() {
+      const pts = studentData.points || 0;
+      const stars = Math.floor(pts / 10);
+      const iconEl = document.getElementById("studentStarIcon");
+      const textEl = document.getElementById("studentStarText");
+
+      if(studentStarDisplayMode === "star") {
+        iconEl.innerText = "⭐";
+        textEl.innerText = `${stars} Stars`;
+      } else {
+        iconEl.innerText = "🏆";
+        textEl.innerText = `${pts} Points`;
+      }
+    }
+
+    // 3. SECURE DAILY CLAIMS
+    async function checkDailyClaimStatus() {
+      const today = new Date();
+      const todayKey = `${today.getFullYear()}_${today.getMonth() + 1}_${today.getDate()}`;
+      const claimStatus = await safeDataFetch(`daily_claims/${studentData.admn}/${todayKey}`);
+      
+      const isWeekend = (today.getDay() === 0 || today.getDay() === 6);
+      const pointsToAward = isWeekend ? 80 : 50;
+
+      document.getElementById("sDailyRewardTitleText").innerText = `+${pointsToAward} Points Today`;
+
+      if (claimStatus === true) {
+        document.getElementById('sClaimDailyPointsBtn').style.display = 'none';
+        document.getElementById('sDailyClaimedBadge').style.display = 'block';
+      }
+    }
+
+    document.getElementById('sClaimDailyPointsBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('sClaimDailyPointsBtn');
+      btn.disabled = true;
+      btn.innerText = "Verifying...";
+
+      const isWeekend = (new Date().getDay() === 0 || new Date().getDay() === 6);
+      const pointsToAward = isWeekend ? 80 : 50;
+
+      const result = await processDailyClaim(studentData.admn, "student", pointsToAward);
+      
+      if (result.success) {
+        triggerStarBurstAnimation();
+        btn.style.display = 'none';
+        document.getElementById('sDailyClaimedBadge').style.display = 'block';
+        studentData.points = (studentData.points || 0) + pointsToAward;
+        fetchClassMates(); // Refresh Leaderboard & Rank
+        renderProfile();
+      } else {
+        window.alert(result.message);
+        btn.style.display = 'none';
+        document.getElementById('sDailyClaimedBadge').style.display = 'block';
+      }
+    });
+
+    // 4. FEES CALCULATOR & UPI
+    let currentStudentTotalDueAmount = 0;
+    async function calculateRealtimeStudentDues() {
+      const matrix = await safeDataFetch("fees_matrix") || {};
+      const studentMatrix = matrix[studentData.admn] || {};
+
+      const academicMonths = ["June", "July", "August", "September", "October", "November", "December", "January", "February", "March", "April", "May"];
+      const currentMonthName = new Date().toLocaleString('default', { month: 'long' });
+
+      const isNurseryOrKG = ["Nursery", "Jr. KG", "Sr. KG"].includes(studentData.class.replace(/class\s*/i, "").trim());
+      const monthlyRate = isNurseryOrKG ? 400 : 500;
+
+      let totalDue = 0;
+      const pendingMonths = [];
+
+      for(let m of academicMonths) {
+        const isPaid = studentMatrix[m] && studentMatrix[m].paid;
+        if(!isPaid) {
+          totalDue += monthlyRate;
+          pendingMonths.push(m);
+        }
+        if(m === currentMonthName) break;
+      }
+
+      currentStudentTotalDueAmount = totalDue;
+
+      if(totalDue === 0) {
+        document.getElementById("sHomeDuesClearedBox").style.display = "block";
+        document.getElementById("sHomeDuesPendingBox").style.display = "none";
+      } else {
+        document.getElementById("sHomeDuesClearedBox").style.display = "none";
+        document.getElementById("sHomeDuesPendingBox").style.display = "block";
+        document.getElementById("sHomeDueAmountText").innerText = `Fees Due: ₹${totalDue}`;
+        document.getElementById("sHomeDueBreakdownText").innerText = `Pending for: ${pendingMonths.join(", ")}`;
+      }
+    }
+
+    document.getElementById("sPayFeesNowBtn").addEventListener('click', () => {
+      if(currentStudentTotalDueAmount <= 0) return;
+      const upiUrl = `upi://pay?pa=7302132270@ybl&pn=MM%20ISLAMIC%20ENGLISH%20SCHOOL&am=${currentStudentTotalDueAmount}&cu=INR&tn=Fee%20Admn%20${studentData.admn}`;
+      window.location.href = upiUrl;
+    });
+
+    // 5. STUDY MATERIALS & HOMEWORK
+    window.switchStudentStudySubTab = function(type) {
+      document.getElementById("subTabMatBtn").classList.toggle("active", type === 'mat');
+      document.getElementById("subTabHwBtn").classList.toggle("active", type === 'hw');
+      document.getElementById("sStudyMatSubSection").style.display = type === 'mat' ? 'block' : 'none';
+      document.getElementById("sHomeworkSubSection").style.display = type === 'hw' ? 'block' : 'none';
+    };
+
+    async function loadStudentStudyMaterials() {
+      const container = document.getElementById("sStudyMatContainer");
+      const classKey = studentData.class.replace(/class\s*/i, "").trim();
+      const materials = await safeDataFetch(`study_material/${classKey}`);
+
+      container.innerHTML = "";
+      if(materials && Object.keys(materials).length > 0) {
+        Object.values(materials).forEach(mat => {
+          container.innerHTML += `
+            <div style="padding:12px; border:1px solid var(--border-color); border-radius:14px; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between;">
+              <div>
+                <div style="font-size:13px; font-weight:800;">${mat.title}</div>
+                <div style="font-size:10px; color:var(--text-muted); margin-top:2px;">${mat.date} | ${mat.type ? mat.type.toUpperCase() : 'PDF'}</div>
+              </div>
+              <a href="${mat.file}" download="${mat.title}" class="btn-primary btn-blue" style="width:auto; padding:6px 14px; font-size:11px; margin-top:0; text-decoration:none;">View/Download</a>
+            </div>
+          `;
+        });
+      } else {
+        container.innerHTML = `<p style="font-size:12px; color:var(--text-muted);">No materials available.</p>`;
+      }
+    }
+
+    async function loadStudentHomework() {
+      const container = document.getElementById("sHomeworkContainer");
+      const classKey = studentData.class.replace(/class\s*/i, "").trim();
+      const homeworks = await safeDataFetch(`homework/${classKey}`);
+
+      container.innerHTML = "";
+      if(homeworks && Object.keys(homeworks).length > 0) {
+        Object.values(homeworks).forEach(hw => {
+          container.innerHTML += `
+            <div style="padding:14px; border:1px solid var(--border-color); border-radius:16px; margin-bottom:12px; background:rgba(0,0,0,0.02);">
+              <div style="font-size:14px; font-weight:800; color:#0288d1;">${hw.title}</div>
+              <div style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">Date: ${hw.date}</div>
+              <img src="${hw.file}" class="homework-card-img" alt="Homework">
+            </div>
+          `;
+        });
+      } else {
+        container.innerHTML = `<p style="font-size:12px; color:var(--text-muted);">No homework assigned.</p>`;
+      }
+    }
+
+    // 6. ONLINE TESTS ENGINE
+    async function loadStudentDueTests() {
+      const container = document.getElementById("sDueOnlineTestsContainer");
+      const classKey = studentData.class.replace(/class\s*/i, "").trim();
+      const testsData = await safeDataFetch(`online_tests/${classKey}`);
+      const myAttempted = await safeDataFetch(`student_test_attempts/${studentData.admn}`) || {};
+
+      container.innerHTML = "";
+      if(testsData && Object.keys(testsData).length > 0) {
+        const now = new Date().getTime();
+        Object.values(testsData).forEach(test => {
+          const isCompleted = myAttempted[test.id] ? true : false;
+          const isExpired = new Date(test.expiry).getTime() < now;
+
+          if(!isExpired) {
+            container.innerHTML += `
+              <div class="card ${isCompleted ? 'test-card-completed' : 'test-card-pending'}" style="padding:14px; margin-bottom:10px; border-radius:14px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <div>
+                    <div style="font-size:14px; font-weight:800; color:${isCompleted ? '#16a34a' : '#d97706'};">${test.title}</div>
+                    <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Subject: ${test.subject} | Marks: ${test.totalMarks} | Time: ${test.timeMinutes} Min</div>
+                  </div>
+                  <div>
+                    ${isCompleted 
+                      ? `<span style="font-size:11px; font-weight:800; color:#16a34a;">✔ Completed</span>`
+                      : `<button class="btn-primary btn-green" style="margin-top:0; width:auto; padding:6px 14px; font-size:11px;" onclick="window.startStudentLiveTest('${test.id}')">▶ Start</button>`
+                    }
+                  </div>
+                </div>
+              </div>
+            `;
+          }
+        });
+      }
+    }
+
+    window.startStudentLiveTest = async function(testId) {
+      const classKey = studentData.class.replace(/class\s*/i, "").trim();
+      const test = await safeDataFetch(`online_tests/${classKey}/${testId}`);
+
+      if(!test) { window.alert("Test details not found or expired."); return; }
+
+      currentLiveTestObj = test;
+      document.getElementById("liveTestTitleDisplay").innerText = `📝 ${test.title}`;
+      
+      const qBox = document.getElementById("liveTestQuestionsBox");
+      qBox.innerHTML = "";
+      
+      test.questions.forEach((qObj, idx) => {
+        let optionsHtml = "";
+        qObj.options.forEach((optText, optIdx) => {
+          optionsHtml += `
+            <div class="opt-row" style="display:flex; align-items:center; gap:8px; margin-top:6px;">
+              <input type="radio" name="live_q_opt_${idx}" value="${optIdx}">
+              <span style="font-size:12px; font-weight:700;">${optText}</span>
+            </div>
+          `;
+        });
+        qBox.innerHTML += `
+          <div class="q-box" style="border:1px solid var(--border-color); padding:12px; border-radius:12px; margin-bottom:12px; background:rgba(0,0,0,0.02);">
+            <div style="font-size:13px; font-weight:800; color:#0288d1; margin-bottom:6px;">Q${idx + 1}: ${qObj.q}</div>
+            ${optionsHtml}
+          </div>
+        `;
+      });
+
+      let totalSeconds = (test.timeMinutes || 15) * 60;
+      if(activeLiveTestTimer) clearInterval(activeLiveTestTimer);
+
+      activeLiveTestTimer = setInterval(() => {
+        totalSeconds--;
+        const mins = Math.floor(totalSeconds / 60);
+        const secs = totalSeconds % 60;
+        document.getElementById("liveTestTimerBox").innerText = `⏱️ Time Remaining: ${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+
+        if(totalSeconds <= 0) {
+          clearInterval(activeLiveTestTimer);
+          window.alert("⏰ Time is up! Submitting automatically...");
+          window.submitStudentLiveTest();
+        }
+      }, 1000);
+
+      window.openModal("studentLiveTestModal");
+    };
+
+    window.submitStudentLiveTest = async function() {
+      if(!currentLiveTestObj) return;
+      if(activeLiveTestTimer) clearInterval(activeLiveTestTimer);
+
+      let obtainedMarks = 0;
+      currentLiveTestObj.questions.forEach((qObj, idx) => {
+        const selectedOpt = document.querySelector(`input[name="live_q_opt_${idx}"]:checked`);
+        if(selectedOpt && parseInt(selectedOpt.value) === qObj.correct) obtainedMarks += currentLiveTestObj.marksPerQ;
+      });
+
+      const percentage = ((obtainedMarks / currentLiveTestObj.totalMarks) * 100).toFixed(1);
+      let awardedPoints = percentage >= 95 ? 100 : percentage >= 90 ? 80 : percentage >= 70 ? 50 : percentage >= 50 ? 30 : percentage >= 30 ? 10 : -50;
+
+      const dateStr = `${new Date().getDate().toString().padStart(2, '0')}/${(new Date().getMonth()+1).toString().padStart(2, '0')}/${new Date().getFullYear()}`;
+
+      const updates = {};
+      const attemptObj = { testId: currentLiveTestObj.id, title: currentLiveTestObj.title, obtained: obtainedMarks, total: currentLiveTestObj.totalMarks, percentage: percentage, date: dateStr };
+      
+      updates[`student_test_attempts/${studentData.admn}/${currentLiveTestObj.id}`] = attemptObj;
+      updates[`test_attempts/${currentLiveTestObj.id}/${studentData.admn}`] = attemptObj;
+      updates[`tests/${studentData.admn}/${Date.now()}`] = { name: `[Online] ${currentLiveTestObj.title}`, total: currentLiveTestObj.totalMarks, obtained: obtainedMarks, percentage: percentage, awardedPoints: awardedPoints, date: dateStr };
+      updates[`students/${studentData.admn}/points`] = (studentData.points || 0) + awardedPoints;
+
+      await update(ref(db), updates);
+
+      window.alert(`Test Submitted!\nScore: ${obtainedMarks} / ${currentLiveTestObj.totalMarks} (${percentage}%)\nPoints: ${awardedPoints >= 0 ? '+' : ''}${awardedPoints}`);
+      window.closeModal("studentLiveTestModal");
+      initDashboard(); // Full refresh
+    };
+
+    // 7. LEADERBOARD & MISC
+    function loadStudentLeaderboard() {
+      const container = document.getElementById("sLeaderboardContainer");
+      container.innerHTML = "";
+      allClassStudents.forEach((st, idx) => {
+        const isMe = String(st.admn) === String(studentData.admn);
+        const pts = st.points || 0;
+        container.innerHTML += `
+          <div class="lb-row" style="${isMe ? 'background:rgba(2, 136, 209, 0.12); font-weight:800;' : ''}">
+            <div style="display:flex; align-items:center;">
+              <div class="lb-badge" style="${isMe ? 'background:#0288d1;' : ''}">${idx + 1}</div>
+              <span style="font-size:13px;">${st.name} ${isMe ? '(You)' : ''}</span>
+            </div>
+            <span class="pts-chip" style="background:#fbbf24; color:#0f172a !important;">⭐ ${Math.floor(pts / 10)} (${pts} PTS)</span>
+          </div>
+        `;
+      });
+    }
+
+    document.getElementById("sViewTestScoresBtn").addEventListener('click', async () => {
+      const testsData = await safeDataFetch(`tests/${studentData.admn}`);
+      const tbody = document.getElementById("sTestScoresTableBody");
+      tbody.innerHTML = "";
+      if(testsData) {
+        Object.values(testsData).forEach(t => {
+          tbody.innerHTML += `<tr><td>${t.date}</td><td style="text-align:left; font-weight:700;">${t.name}</td><td><b>${t.obtained}</b></td><td>${t.total}</td><td><b>${t.percentage}%</b></td></tr>`;
+        });
+        document.getElementById("sTestScoresDisplayArea").style.display = "block";
+      }
+    });
+
+    document.getElementById("sMyPointHistoryBtn").addEventListener('click', async () => {
+      const pts = studentData.points || 0;
+      document.getElementById("historyTotalPoints").innerText = `${pts} PTS`;
+      document.getElementById("historyStarText").innerText = `Equivalent to ${Math.floor(pts / 10)} Stars ⭐`;
+
+      const testsData = await safeDataFetch(`tests/${studentData.admn}`);
+      const tbody = document.getElementById("sPointHistoryTableBody");
+      tbody.innerHTML = "";
+      if(testsData) {
+        Object.values(testsData).forEach(t => {
+          tbody.innerHTML += `<tr><td>${t.date}</td><td>Test: ${t.name}</td><td><b>+${t.awardedPoints || 0} PTS</b></td></tr>`;
+        });
+      }
+      window.openModal("studentPointHistoryModal");
+    });
+
+    // Notifications
+    function renderNotifications(notifs) {
+      const container = document.getElementById('notifListContainer');
+      const badge = document.getElementById('notifBadge');
+      if (!notifs || notifs.length === 0) return;
+      
+      badge.style.display = 'block';
+      badge.innerText = notifs.length;
+      container.innerHTML = "";
+      notifs.forEach(n => {
+        container.innerHTML += `
+          <div style="padding: 12px; border-bottom: 1px solid var(--border-color); background: rgba(0,0,0,0.02); border-radius: 8px; margin-bottom: 8px;">
+            <div style="font-weight: 800; font-size: 13px; color: #0288d1;">${n.title}</div>
+            <div style="font-size: 11px; color: var(--text-color); margin-top: 4px;">${n.message}</div>
+            <div style="font-size: 9px; color: var(--text-muted); margin-top: 4px;">${new Date(n.timestamp).toLocaleString()}</div>
+          </div>
+        `;
+      });
+    }
+
+    document.getElementById('notifBtn').addEventListener('click', () => {
+      window.openModal('notificationsModal');
+      document.getElementById('notifBadge').style.display = 'none';
+    });
+
+    // Globals / UI Controls
+    window.switchTab = function(tabId, element) {
+      document.querySelectorAll('.tab-section').forEach(t => { t.classList.remove('active', 'animate-in'); });
+      const target = document.getElementById(tabId);
+      target.classList.add('active');
+      setTimeout(() => target.classList.add('animate-in'), 10);
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      if(element) element.classList.add('active');
+    };
+
+    window.openModal = function(id) {
+      document.getElementById('leftDrawer').style.left = '-80%';
+      document.getElementById('drawerOverlay').style.display = 'none';
+      if(id === 'weeklyRewardDetailsModal') window.renderWeeklyScheduleModal();
+      document.getElementById(id).classList.add('active');
+    };
+
+    window.closeModal = function(id) { document.getElementById(id).classList.remove('active'); };
+    window.alert = function(msg) { document.getElementById("customAlertMessage").innerText = msg; document.getElementById("customAlertModal").classList.add("active"); };
+
+    document.getElementById('hamburgerBtn').addEventListener('click', () => {
+      document.getElementById('leftDrawer').style.left = '0';
+      document.getElementById('drawerOverlay').style.display = 'block';
+    });
+    
+    document.getElementById('closeDrawerBtn').addEventListener('click', () => {
+      document.getElementById('leftDrawer').style.left = '-80%';
+      document.getElementById('drawerOverlay').style.display = 'none';
+    });
+
+    document.getElementById('logoutBtnTop').addEventListener('click', () => { localStorage.clear(); window.location.replace('../login.html'); });
+    document.getElementById('logoutBtnDrawer').addEventListener('click', () => { localStorage.clear(); window.location.replace('../login.html'); });
+
+    function triggerStarBurstAnimation() {
+      const sourceEl = document.getElementById("sClaimDailyPointsBtn");
+      const targetEl = document.getElementById("studentStarsContainer");
+      if (!sourceEl || !targetEl) return;
+      const sourceRect = sourceEl.getBoundingClientRect();
+      const targetRect = targetEl.getBoundingClientRect();
+      const startX = sourceRect.left + sourceRect.width / 2;
+      const startY = sourceRect.top + sourceRect.height / 2;
+      const endX = targetRect.left + targetRect.width / 2;
+      const endY = targetRect.top + targetRect.height / 2;
+      for (let i = 0; i < 8; i++) {
+        const star = document.createElement("div");
+        star.className = "burst-star";
+        star.innerText = "⭐";
+        star.style.left = `${startX}px`;
+        star.style.top = `${startY}px`;
+        document.body.appendChild(star);
+        setTimeout(() => {
+          star.style.transform = `translate(${endX - startX + (Math.random()-0.5)*60}px, ${endY - startY + (Math.random()-0.5)*60}px) scale(0.6)`;
+          star.style.opacity = "0";
+        }, i * 100);
+        setTimeout(() => star.remove(), 1500);
+      }
+    }
+
+    window.renderWeeklyScheduleModal = async function() {
+      const userClaims = await safeDataFetch(`daily_claims/${studentData.admn}`) || {};
+      const today = new Date();
+      const distanceToMon = today.getDay() === 0 ? -6 : 1 - today.getDay();
+      const mondayDate = new Date(today);
+      mondayDate.setDate(today.getDate() + distanceToMon);
+
+      const daysConfig = [{name:"Mon",idx:0,pts:50},{name:"Tue",idx:1,pts:50},{name:"Wed",idx:2,pts:50},{name:"Thu",idx:3,pts:50},{name:"Fri",idx:4,pts:50},{name:"Sat",idx:5,pts:80,w:true},{name:"Sun",idx:6,pts:80,w:true}];
+      const topGrid = document.getElementById("weekdaysGridTop");
+      const bottomGrid = document.getElementById("weekendsGridBottom");
+      topGrid.innerHTML = ""; bottomGrid.innerHTML = "";
+
+      daysConfig.forEach(day => {
+        const dayDate = new Date(mondayDate);
+        dayDate.setDate(mondayDate.getDate() + day.idx);
+        dayDate.setHours(0,0,0,0);
+        const dayKey = `${dayDate.getFullYear()}_${dayDate.getMonth() + 1}_${dayDate.getDate()}`;
+        const isClaimed = userClaims[dayKey] === true;
+        const isToday = dayDate.getTime() === new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+        const isPast = dayDate.getTime() < new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+
+        let btnHtml = isClaimed ? `<button class="btn-status-claimed">Claimed</button>` : isToday ? `<button class="btn-primary btn-orange" style="margin:0; padding:4px; font-size:10px;" onclick="document.getElementById('sClaimDailyPointsBtn').click(); window.closeModal('weeklyRewardDetailsModal')">Claim</button>` : isPast ? `<button class="btn-status-expired">Expired</button>` : `<button class="btn-status-wait">Wait</button>`;
+
+        const html = `
+          <div class="day-card ${day.w ? 'weekend-card' : ''} ${isClaimed ? 'claimed-box' : ''}" style="${isToday && !isClaimed ? 'border:1.5px solid #0288d1;' : ''}">
+            <div class="day-card-title">${day.name}</div><div class="day-card-pts">+${day.pts}</div>${btnHtml}
+          </div>
+        `;
+        if (day.w) bottomGrid.innerHTML += html; else topGrid.innerHTML += html;
+      });
+    };
+
+    // Dark Mode Engine
+    document.getElementById("darkModeCheckbox").addEventListener("change", (e) => {
+      document.body.classList.toggle("dark-mode", e.target.checked);
+      localStorage.setItem("darkMode", e.target.checked ? "enabled" : "disabled");
+    });
+    if(localStorage.getItem("darkMode") === "enabled") {
+      document.body.classList.add("dark-mode");
+      document.getElementById("darkModeCheckbox").checked = true;
+    }
+    window.setAppTheme = function(theme) {
+      document.body.classList.remove("theme-emerald", "theme-navy", "theme-slate");
+      document.body.classList.add("theme-" + theme);
+      localStorage.setItem("appTheme", theme);
+    };
+    document.body.classList.add("theme-" + (localStorage.getItem("appTheme") || "navy"));
+
+    // Boot
+    initDashboard();
+  </script>
+</body>
+</html>
