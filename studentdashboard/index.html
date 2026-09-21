@@ -15,7 +15,7 @@
 
   <!-- HEADER -->
   <header id="topBar" class="app-header">
-    <button id="hamburgerBtn" class="icon-btn">☰</button>
+    <button id="hamburgerBtn" class="icon-btn" onclick="document.getElementById('leftDrawer').style.left='0'; document.getElementById('drawerOverlay').style.display='block';">☰</button>
     
     <div class="header-title-box">
       <div class="header-title">M.M ISLAMIC ENGLISH SCHOOL</div>
@@ -30,19 +30,19 @@
     <button id="notifBtn" class="icon-btn" style="position: relative; margin-right: 8px;">
       🔔 <span id="notifBadge" class="notif-badge" style="display:none;">0</span>
     </button>
-    <button id="threeDotBtn" class="icon-btn">⋮</button>
+    <button id="threeDotBtn" class="icon-btn" onclick="document.getElementById('menuDropdown').classList.toggle('active'); event.stopPropagation();">⋮</button>
 
     <div id="menuDropdown" class="menu-dropdown">
-      <div class="menu-item logout" id="logoutBtnTop">🚪 Logout</div>
+      <div class="menu-item logout" onclick="localStorage.clear(); window.location.replace('../login.html');">🚪 Logout</div>
     </div>
   </header>
 
   <!-- LEFT DRAWER (SETTINGS & CONTROLS) -->
-  <div id="drawerOverlay" class="left-drawer-overlay"></div>
+  <div id="drawerOverlay" class="left-drawer-overlay" onclick="document.getElementById('leftDrawer').style.left='-80%'; this.style.display='none';"></div>
   <div id="leftDrawer" class="left-drawer">
     <div class="drawer-header">
       <span>⚙️ Control & Settings</span>
-      <span class="close-modal" id="closeDrawerBtn">✕</span>
+      <span class="close-modal" onclick="document.getElementById('leftDrawer').style.left='-80%'; document.getElementById('drawerOverlay').style.display='none';">✕</span>
     </div>
 
     <div class="dark-mode-toggle-row">
@@ -59,8 +59,11 @@
       <div class="drawer-item" onclick="window.setAppTheme('emerald')">🌿 Royal Emerald & Gold</div>
       <div class="drawer-item" onclick="window.setAppTheme('navy')">🌊 Classic Navy & Blue</div>
       <div class="drawer-item" onclick="window.setAppTheme('slate')">🏛️ Slate & Crimson Tech</div>
+
+      <div style="padding: 12px 18px 4px 18px; font-size:11px; font-weight:800; color:var(--text-muted); border-top:1px solid var(--border-color); margin-top:8px;">SYSTEM</div>
+      <div class="drawer-item" onclick="window.location.reload(true);" style="color:#10b981; font-weight:800;">🔄 Check for Updates</div>
       
-      <div class="drawer-item logout" id="logoutBtnDrawer" style="margin-top: auto; color: #dc2626 !important; border-top: 1px solid var(--border-color);">🚪 Logout Account</div>
+      <div class="drawer-item logout" style="margin-top: auto; color: #dc2626 !important; border-top: 1px solid var(--border-color);" onclick="localStorage.clear(); window.location.replace('../login.html');">🚪 Logout Account</div>
     </div>
   </div>
 
@@ -68,7 +71,7 @@
   <div id="notifSectionDrawer" class="notif-section-drawer">
     <div class="notif-drawer-header">
       <span>🔔 Notifications</span>
-      <span class="close-modal" id="closeNotifBtn">✕</span>
+      <span class="close-modal" id="closeNotifBtn" onclick="document.getElementById('notifSectionDrawer').classList.remove('active');">✕</span>
     </div>
     <div class="drawer-body" id="notifListContainer" style="padding: 16px;">
       <p style="font-size: 12px; color: var(--text-muted); text-align: center;">No new notifications.</p>
@@ -86,10 +89,11 @@
         <span id="sHomeClassBadge" class="class-badge" style="background:#0288d1; margin-top:4px;">Class -</span>
         <div style="font-size:13px; font-weight:800; color:#7c3aed; margin-top:6px;" id="sHomeRankText">Class Rank: #-</div>
 
+        <!-- DAILY REWARDS SYSTEM -->
         <div class="daily-reward-card" style="position: relative;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
             <div style="font-size:11px; font-weight:800; color:#d97706; text-transform:uppercase; letter-spacing:0.5px;">🎁 DAILY REWARD POINTS</div>
-            <a href="javascript:void(0)" onclick="window.openModal('weeklyRewardDetailsModal')" style="font-size:11px; font-weight:800; color:#0288d1; text-decoration:none;">Details &rarr;</a>
+            <a href="javascript:void(0)" onclick="window.renderWeeklyScheduleModal(); window.openModal('weeklyRewardDetailsModal');" style="font-size:11px; font-weight:800; color:#0288d1; text-decoration:none;">Details &rarr;</a>
           </div>
           <h3 id="sDailyRewardTitleText" style="font-size:16px; font-weight:900; color:var(--text-color); margin:4px 0;">+50 Points Today</h3>
           <p id="sDailyRewardSubText" style="font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:10px;">Claim your daily bonus login points!</p>  
@@ -120,8 +124,8 @@
         <div class="card-title">My Attendance Record</div>
         <label>Select Month:</label>
         <select id="sAttMonthSelect">
-          <option value="June">June</option><option value="July">July</option><option value="August" selected>August</option>
-          <option value="September">September</option><option value="October">October</option><option value="November">November</option>
+          <option value="June">June</option><option value="July">July</option><option value="August">August</option>
+          <option value="September" selected>September</option><option value="October">October</option><option value="November">November</option>
           <option value="December">December</option><option value="January">January</option><option value="February">February</option>
           <option value="March">March</option><option value="April">April</option><option value="May">May</option>
         </select>
@@ -158,7 +162,7 @@
         <label>Select Month:</label>
         <select id="sTestMonthSelect">
           <option value="ALL">All Months</option>
-          <option value="June">June</option><option value="July">July</option><option value="August" selected>August</option><option value="September">September</option>
+          <option value="June">June</option><option value="July">July</option><option value="August">August</option><option value="September" selected>September</option>
         </select>
         <button id="sViewTestScoresBtn" class="btn-primary btn-blue">View Scores</button>
       </div>
@@ -181,7 +185,7 @@
        ==================================================================== -->
   <div id="liveTestFullScreen" class="live-test-fullscreen">
     <div class="live-test-header">
-      <button class="btn-sm-del" onclick="window.confirmTestExit()" style="margin: 0; padding: 6px 12px; font-size: 13px;">Exit Test</button>
+      <button class="btn-sm-del" onclick="window.confirmTestExit()" style="margin: 0; width: auto;">Exit Test</button>
       <span id="liveTestTitleDisplay" style="font-size: 15px; font-weight: 900; text-align: center; flex: 1; padding: 0 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Test Title</span>
       <div id="liveTestTimerBox" class="timer-badge" style="margin:0; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2);">--:--</div>
     </div>
@@ -196,7 +200,16 @@
   <div id="studentProfileDrawerModal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><span>👤 My Profile & Fees Card</span><span class="close-modal" onclick="window.closeModal('studentProfileDrawerModal')">✕</span></div><div class="modal-body"><label>Full Name:</label><input type="text" id="sProfFullName" disabled><label>Date of Birth:</label><input type="text" id="sProfDob" disabled><label>WhatsApp Number:</label><input type="text" id="sProfPhone" disabled><div style="margin-top:20px; border-top:2px dashed var(--border-color); padding-top:16px;"><button id="sGenerateFeesCardBtn" class="btn-primary btn-orange">Generate Fees Card</button></div><div style="margin-top:16px; border-top:2px dashed var(--border-color); padding-top:16px;"><button id="sMyPointHistoryBtn" class="btn-primary btn-purple">My Point History</button></div><div class="card" id="sFeesCardViewArea" style="display:none; margin-top:16px;"><div class="table-container"><table style="min-width: 100%;"><thead><tr><th>Fee Type</th><th>Status</th><th>Payment Details</th></tr></thead><tbody id="sFeesCardBody"></tbody></table></div></div></div></div></div>
   <div id="studentPointHistoryModal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><span>⭐ Point History & Rank</span><span class="close-modal" onclick="window.closeModal('studentPointHistoryModal')">✕</span></div><div class="modal-body"><div style="text-align:center; margin-bottom:14px; background:rgba(2, 136, 209, 0.08); padding:12px; border-radius:14px; border:1px solid #0288d1;"><h3 id="historyTotalPoints" style="color:#0288d1; font-size:22px; font-weight:900;">0 PTS</h3><p id="historyStarText" style="font-size:12px; font-weight:800; color:#fbbf24;">Equivalent to 0 Stars ⭐</p></div><div class="table-container"><table style="min-width: 100%;"><thead><tr><th>Date</th><th>Activity / Test</th><th>Points</th></tr></thead><tbody id="sPointHistoryTableBody"></tbody></table></div></div></div></div>
   <div id="studentUpdateModal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><span>✏️ Update Profile</span><span class="close-modal" onclick="window.closeModal('studentUpdateModal')">✕</span></div><div class="modal-body"><label>Full Name:</label><input type="text" id="sGrayedName" disabled><label>Date of Birth:</label><input type="text" id="sGrayedDob" disabled><label>WhatsApp Phone:</label><input type="text" id="sGrayedPhone" disabled><div style="margin-top:16px; padding:12px; border-radius:12px; background:rgba(239, 68, 68, 0.12); border:1px solid #ef4444; text-align:center; color:#ef4444; font-weight:800; font-size:12px;">🔒 Contact Teacher to Update Your Profile</div></div></div></div>
-  <div id="customAlertModal" class="modal-overlay" style="z-index: 99999;"><div class="modal-content" style="max-width: 320px; text-align: center; padding: 22px; border-radius: 20px;"><h3 style="color: #0288d1; font-size: 15px; font-weight: 800; margin-bottom: 3px; letter-spacing: 0.3px;">System Alert</h3><div id="customAlertMessage" style="font-size: 13px; font-weight: 700; color: var(--text-color); margin-bottom: 22px; line-height: 1.4;"></div><div id="alertActionBtns"><button class="btn-primary btn-blue" style="margin-top:0; width:100%; padding:11px; border-radius: 12px;" onclick="window.closeModal('customAlertModal')">OK</button></div></div></div>
+  
+  <div id="customAlertModal" class="modal-overlay" style="z-index: 99999;">
+    <div class="modal-content" style="max-width: 320px; text-align: center; padding: 22px; border-radius: 20px;">
+      <h3 style="color: #0288d1; font-size: 15px; font-weight: 800; margin-bottom: 3px; letter-spacing: 0.3px;">System Alert</h3>
+      <div id="customAlertMessage" style="font-size: 13px; font-weight: 700; color: var(--text-color); margin-bottom: 22px; line-height: 1.4;"></div>
+      <div id="alertActionBtns">
+        <button class="btn-primary btn-blue" style="margin-top:0; border-radius: 12px;" onclick="window.closeModal('customAlertModal')">OK</button>
+      </div>
+    </div>
+  </div>
 
   <!-- SCRIPTS MODULE -->
   <script type="module">
@@ -249,8 +262,12 @@
       document.getElementById('sHomeClassBadge').innerText = `Class ${studentData.class}`;
       document.getElementById('sHomeAvatar').src = studentData.photo || "https://via.placeholder.com/150";
 
-      document.getElementById('sProfFullName').value = studentData.name; document.getElementById('sProfDob').value = studentData.dob || "-"; document.getElementById('sProfPhone').value = studentData.phone || "-";
-      document.getElementById('sGrayedName').value = studentData.name; document.getElementById('sGrayedDob').value = studentData.dob || "-"; document.getElementById('sGrayedPhone').value = studentData.phone || "-";
+      document.getElementById('sProfFullName').value = studentData.name; 
+      document.getElementById('sProfDob').value = studentData.dob || "-"; 
+      document.getElementById('sProfPhone').value = studentData.phone || "-";
+      document.getElementById('sGrayedName').value = studentData.name; 
+      document.getElementById('sGrayedDob').value = studentData.dob || "-"; 
+      document.getElementById('sGrayedPhone').value = studentData.phone || "-";
       updateHeaderStarBadge(); updateRankDisplay();
     }
 
@@ -292,6 +309,51 @@
         window.alert(result.message); btn.style.display = 'none'; document.getElementById('sDailyClaimedBadge').style.display = 'block';
       }
     });
+
+    // Weekly Reward Schedule Rendering Logic
+    window.renderWeeklyScheduleModal = async function() {
+      const userClaims = await safeDataFetch(`daily_claims/${studentData.admn}`) || {};
+      const today = new Date();
+      const distanceToMon = today.getDay() === 0 ? -6 : 1 - today.getDay();
+      const mondayDate = new Date(today);
+      mondayDate.setDate(today.getDate() + distanceToMon);
+
+      const daysConfig = [
+        {name:"Mon",idx:0,pts:50}, {name:"Tue",idx:1,pts:50}, {name:"Wed",idx:2,pts:50},
+        {name:"Thu",idx:3,pts:50}, {name:"Fri",idx:4,pts:50},
+        {name:"Sat",idx:5,pts:80,w:true}, {name:"Sun",idx:6,pts:80,w:true}
+      ];
+      
+      const topGrid = document.getElementById("weekdaysGridTop");
+      const bottomGrid = document.getElementById("weekendsGridBottom");
+      topGrid.innerHTML = ""; bottomGrid.innerHTML = "";
+
+      daysConfig.forEach(day => {
+        const dayDate = new Date(mondayDate);
+        dayDate.setDate(mondayDate.getDate() + day.idx);
+        const dayKey = `${dayDate.getFullYear()}_${dayDate.getMonth() + 1}_${dayDate.getDate()}`;
+        const isClaimed = userClaims[dayKey] === true;
+        
+        const dayTime = new Date(dayDate.getFullYear(), dayDate.getMonth(), dayDate.getDate()).getTime();
+        const todayTime = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+        const isToday = dayTime === todayTime;
+        const isPast = dayTime < todayTime;
+
+        let btnHtml = isClaimed ? `<button class="btn-status-claimed">Claimed</button>` : 
+                      isToday ? `<button class="btn-primary btn-orange" style="margin:0; padding:4px; font-size:10px;" onclick="document.getElementById('sClaimDailyPointsBtn').click(); window.closeModal('weeklyRewardDetailsModal')">Claim</button>` : 
+                      isPast ? `<button class="btn-status-expired">Expired</button>` : 
+                      `<button class="btn-status-wait">Wait</button>`;
+
+        const html = `
+          <div class="day-card ${day.w ? 'weekend-card' : ''} ${isClaimed ? 'claimed-box' : ''}" style="${isToday && !isClaimed ? 'border:1.5px solid #0288d1;' : ''}">
+            <div class="day-card-title">${day.name}</div>
+            <div class="day-card-pts">+${day.pts}</div>
+            ${btnHtml}
+          </div>
+        `;
+        if (day.w) bottomGrid.innerHTML += html; else topGrid.innerHTML += html;
+      });
+    };
 
     // Dues
     let currentStudentTotalDueAmount = 0;
@@ -467,21 +529,12 @@
         c.innerHTML += `<div class="lb-row" style="${isMe ? 'background:rgba(2, 136, 209, 0.12); font-weight:800;' : ''}"><div style="display:flex; align-items:center;"><div class="lb-badge" style="${isMe ? 'background:#0288d1;' : ''}">${idx + 1}</div><span style="font-size:13px;">${st.name} ${isMe ? '(You)' : ''}</span></div><span class="pts-chip" style="background:#fbbf24; color:#0f172a !important;">⭐ ${Math.floor((st.points||0) / 10)} (${st.points||0} PTS)</span></div>`;
       });
     }
-
-    // Three Dot Menu & Drawers
-    document.getElementById('threeDotBtn').addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('menuDropdown').classList.toggle('active'); });
-    document.addEventListener("click", (e) => { if(!e.target.closest("#threeDotBtn") && !e.target.closest("#menuDropdown")) document.getElementById("menuDropdown").classList.remove("active"); });
-    
-    document.getElementById('hamburgerBtn').addEventListener('click', () => { document.getElementById('leftDrawer').style.left = '0'; document.getElementById('drawerOverlay').style.display='block'; });
-    document.getElementById('closeDrawerBtn').addEventListener('click', () => { document.getElementById('leftDrawer').style.left = '-80%'; document.getElementById('drawerOverlay').style.display='none'; });
-    document.getElementById('drawerOverlay').addEventListener('click', () => { document.getElementById('leftDrawer').style.left = '-80%'; document.getElementById('drawerOverlay').style.display='none'; });
     
     // Notifications Drawer
     document.getElementById('notifBtn').addEventListener('click', () => { 
       document.getElementById('notifSectionDrawer').classList.add('active'); 
-      markNotificationsAsRead(userId); // Clears the +1 badge securely on DB
+      markNotificationsAsRead(userId); 
     });
-    document.getElementById('closeNotifBtn').addEventListener('click', () => document.getElementById('notifSectionDrawer').classList.remove('active'));
     
     function renderNotifications(notifs) {
       const container = document.getElementById('notifListContainer');
@@ -502,9 +555,7 @@
     window.switchTab = function(tabId, element) { document.querySelectorAll('.tab-section').forEach(t => t.classList.remove('active', 'animate-in')); const target = document.getElementById(tabId); target.classList.add('active'); setTimeout(() => target.classList.add('animate-in'), 10); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); if(element) element.classList.add('active'); };
     window.openModal = function(id) { document.getElementById('leftDrawer').style.left = '-80%'; document.getElementById('drawerOverlay').style.display='none'; document.getElementById(id).classList.add('active'); };
     window.closeModal = function(id) { document.getElementById(id).classList.remove('active'); };
-    window.alert = function(msg) { document.getElementById("customAlertMessage").innerText = msg; document.getElementById("alertActionBtns").innerHTML = `<button class="btn-primary btn-blue" style="margin-top:0; width:100%; padding:11px; border-radius: 12px;" onclick="window.closeModal('customAlertModal')">OK</button>`; document.getElementById("customAlertModal").classList.add("active"); };
-    document.getElementById('logoutBtnTop').addEventListener('click', () => { localStorage.clear(); window.location.replace('../login.html'); });
-    document.getElementById('logoutBtnDrawer').addEventListener('click', () => { localStorage.clear(); window.location.replace('../login.html'); });
+    window.alert = function(msg) { document.getElementById("customAlertMessage").innerText = msg; document.getElementById("alertActionBtns").innerHTML = `<button class="btn-primary btn-blue" style="margin-top:0; width:100%; border-radius: 12px;" onclick="window.closeModal('customAlertModal')">OK</button>`; document.getElementById("customAlertModal").classList.add("active"); };
 
     function triggerStarBurstAnimation() { const s=document.getElementById("sClaimDailyPointsBtn").getBoundingClientRect(), t=document.getElementById("studentStarsContainer").getBoundingClientRect(); for(let i=0;i<8;i++){ const star=document.createElement("div"); star.className="burst-star"; star.innerText="⭐"; star.style.left=`${s.left+s.width/2}px`; star.style.top=`${s.top+s.height/2}px`; document.body.appendChild(star); setTimeout(()=>{star.style.transform=`translate(${t.left-s.left+(Math.random()-0.5)*60}px, ${t.top-s.top+(Math.random()-0.5)*60}px) scale(0.6)`; star.style.opacity="0";}, i*100); setTimeout(()=>star.remove(),1500); } }
 
