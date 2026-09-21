@@ -18,7 +18,7 @@
 
   <!-- HEADER -->
   <header id="topBar" class="app-header">
-    <button id="hamburgerBtn" class="icon-btn">☰</button>
+    <button id="hamburgerBtn" class="icon-btn" onclick="document.getElementById('leftDrawer').style.left='0'; document.getElementById('drawerOverlay').style.display='block';">☰</button>
     
     <div class="header-title-box">
       <div class="header-title">M.M ISLAMIC ENGLISH SCHOOL</div>
@@ -27,23 +27,23 @@
     </div>
 
     <!-- NOTIFICATIONS BELL -->
-    <button id="notifBtn" class="icon-btn" style="position: relative;">
+    <button id="notifBtn" class="icon-btn" style="position: relative; margin-right: 8px;">
       🔔 <span id="notifBadge" class="notif-badge" style="display:none;">0</span>
     </button>
-    <button id="threeDotBtn" class="icon-btn" style="margin-left: 8px;">⋮</button>
+    <button id="threeDotBtn" class="icon-btn" onclick="document.getElementById('menuDropdown').classList.toggle('active'); event.stopPropagation();">⋮</button>
 
     <div id="menuDropdown" class="menu-dropdown">
       <div class="menu-item" onclick="window.openModal('addSubjectModal')">➕ Add Subject</div>
-      <div class="menu-item logout" id="logoutBtnTop">🚪 Logout</div>
+      <div class="menu-item logout" onclick="localStorage.clear(); window.location.replace('../login.html');">🚪 Logout</div>
     </div>
   </header>
 
   <!-- LEFT DRAWER -->
-  <div id="drawerOverlay" class="left-drawer-overlay"></div>
+  <div id="drawerOverlay" class="left-drawer-overlay" onclick="document.getElementById('leftDrawer').style.left='-80%'; this.style.display='none';"></div>
   <div id="leftDrawer" class="left-drawer">
     <div class="drawer-header">
       <span>⚙️ Control & Settings</span>
-      <span class="close-modal" id="closeDrawerBtn">✕</span>
+      <span class="close-modal" onclick="document.getElementById('leftDrawer').style.left='-80%'; document.getElementById('drawerOverlay').style.display='none';">✕</span>
     </div>
 
     <div class="dark-mode-toggle-row">
@@ -52,7 +52,6 @@
     </div>
 
     <div class="drawer-body">
-      <!-- NEW FEATURE: IN / OUT TIME LOGGER -->
       <div style="padding: 10px 18px 4px 18px; font-size:11px; font-weight:800; color:#10b981;">ATTENDANCE LOGGING</div>
       <div class="drawer-item" onclick="window.openModal('inOutModal')" style="color: #7c3aed; font-weight: 900;">⏱️ Log In / Out Time</div>
 
@@ -65,7 +64,10 @@
       <div class="drawer-item" onclick="window.openModal('addStudyMaterialModal')">📁 Add Study Material</div>
       <div class="drawer-item" onclick="window.openModal('manageStudyMaterialModal')">📚 Manage Study Material</div>
 
-      <div class="drawer-item logout" id="logoutBtnDrawer" style="margin-top: auto; color: #dc2626 !important; border-top: 1px solid var(--border-color);">🚪 Logout Account</div>
+      <div style="padding: 12px 18px 4px 18px; font-size:11px; font-weight:800; color:var(--text-muted); border-top:1px solid var(--border-color); margin-top:8px;">SYSTEM</div>
+      <div class="drawer-item" onclick="window.location.reload(true);" style="color:#10b981; font-weight:800;">🔄 Check for Updates</div>
+
+      <div class="drawer-item logout" style="margin-top: auto; color: #dc2626 !important; border-top: 1px solid var(--border-color);" onclick="localStorage.clear(); window.location.replace('../login.html');">🚪 Logout Account</div>
     </div>
   </div>
 
@@ -73,7 +75,7 @@
   <div id="notifSectionDrawer" class="notif-section-drawer">
     <div class="notif-drawer-header">
       <span>🔔 Notifications</span>
-      <span class="close-modal" id="closeNotifBtn">✕</span>
+      <span class="close-modal" id="closeNotifBtn" onclick="document.getElementById('notifSectionDrawer').classList.remove('active');">✕</span>
     </div>
     <div class="drawer-body" id="notifListContainer" style="padding: 16px;">
       <p style="font-size: 12px; color: var(--text-muted); text-align: center;">No new notifications.</p>
@@ -101,7 +103,7 @@
             </div>
           </div>
         </div>
-        <button id="refreshTeacherDashboardBtn" class="btn-primary btn-purple" style="margin-top:14px;">🔄 Refresh Dashboard</button>
+        <button id="refreshTeacherDashboardBtn" class="btn-primary btn-purple" style="margin-top:14px;" onclick="window.location.reload(true);">🔄 Refresh Dashboard</button>
       </div>
 
       <!-- DAILY REWARD -->
@@ -265,7 +267,7 @@
        MODALS SYSTEM
        ==================================================================== -->
 
-  <!-- IN/OUT TIME MODAL (NEW FEATURE) -->
+  <!-- IN/OUT TIME MODAL (WITH SHAKE FIX) -->
   <div id="inOutModal" class="modal-overlay">
     <div class="modal-content">
       <div class="modal-header">
@@ -277,13 +279,13 @@
         
         <div style="background: rgba(22, 163, 74, 0.08); border: 1px solid rgba(22, 163, 74, 0.3); padding: 16px; border-radius: 12px; margin-bottom: 16px;">
           <div style="font-size: 13px; font-weight: 800; color: #16a34a; margin-bottom: 8px;">IN TIME</div>
-          <button id="logInBtn" class="btn-primary btn-green">Save IN Log</button>
+          <button id="logInBtn" class="btn-primary btn-green" data-saved="false">Save IN Log</button>
           <div id="inTimeText" style="display:none; font-size: 12px; font-weight: 800; color: var(--text-muted); margin-top: 8px;">Logged at: -</div>
         </div>
 
         <div style="background: rgba(220, 38, 38, 0.08); border: 1px solid rgba(220, 38, 38, 0.3); padding: 16px; border-radius: 12px;">
           <div style="font-size: 13px; font-weight: 800; color: #dc2626; margin-bottom: 8px;">OUT TIME</div>
-          <button id="logOutBtn" class="btn-primary btn-red">Save OUT Log</button>
+          <button id="logOutBtn" class="btn-primary btn-red" data-saved="false">Save OUT Log</button>
           <div id="outTimeText" style="display:none; font-size: 12px; font-weight: 800; color: var(--text-muted); margin-top: 8px;">Logged at: -</div>
         </div>
       </div>
@@ -501,10 +503,9 @@
   <!-- CUSTOM ALERT MODAL -->
   <div id="customAlertModal" class="modal-overlay" style="z-index: 99999;">
     <div class="modal-content" style="max-width: 320px; text-align: center; padding: 22px; border-radius: 20px;">
-      <h3 style="color: #0288d1; font-size: 15px; font-weight: 800; margin-bottom: 3px;">M.M ISLAMIC ENGLISH SCHOOL</h3>
-      <p style="color: var(--text-muted); font-size: 11px; font-weight: 700; margin-bottom: 14px;">System says</p>
+      <h3 style="color: #0288d1; font-size: 15px; font-weight: 800; margin-bottom: 3px;">System Alert</h3>
       <div id="customAlertMessage" style="font-size: 13px; font-weight: 700; color: var(--text-color); margin-bottom: 22px;"></div>
-      <button class="btn-primary btn-blue" style="margin-top:0; width:100%; border-radius: 12px;" onclick="window.closeModal('customAlertModal')">OK</button>
+      <div id="alertActionBtns"><button class="btn-primary btn-blue" style="margin-top:0; border-radius: 12px;" onclick="window.closeModal('customAlertModal')">OK</button></div>
     </div>
   </div>
 
@@ -523,17 +524,18 @@
        SCRIPTS
        ==================================================================== -->
   <script type="module">
-    import { safeDataFetch, verifyUserRole, processDailyClaim, listenForNotifications, logTeacherTime, markNotificationsAsRead } from '../js/api.js';
+    import { safeDataFetch, processDailyClaim, listenForNotifications, logTeacherTime, markNotificationsAsRead } from '../js/api.js';
     import { ref, update, set, remove, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { db } from '../js/firebaseconfig.js';
 
     const userId = localStorage.getItem("loggedUser");
     let teacherData = null;
     let allClassStudents = [];
+    let allTeachers = {};
     let autoFilledJsonQuestions = null;
     let teacherLastRank = null;
 
-    // 1. SECURE INITIALIZATION
+    // 1. SECURE INITIALIZATION & CACHE BUILDER
     async function initDashboard() {
       if (!userId || localStorage.getItem("loggedRole") !== "teacher") {
         return window.location.replace('../login.html');
@@ -542,16 +544,19 @@
       teacherData = await safeDataFetch(`teachers/${userId}`);
       if (!teacherData) { window.alert("Teacher profile missing."); return; }
 
-      // Initialization Queue
+      // Build overall cache for Teachers (To Fix Rank/Teacherboard Loading)
+      await buildCache();
+      
+      // Render Initial Data
       renderProfile();
       checkDailyClaimStatus();
       checkInOutStatus();
-      await fetchClassMates();
       
       // Loaders
       loadTeacherTodayAttendance();
       populateTeacherStudentDropdowns();
       populateClassSubjectsDropdown();
+      window.renderTeacherboardCardsTable(); 
       window.loadTeacherLeaderboard();
       window.loadTeacherActiveOnlineTests();
 
@@ -566,7 +571,6 @@
         }
       });
 
-      // Start Clock for In/Out Modal
       setInterval(() => {
         const d = new Date();
         const el = document.getElementById('liveDateTimeDisplay');
@@ -574,16 +578,21 @@
       }, 1000);
     }
 
+    async function buildCache() {
+      const snap = await safeDataFetch("/");
+      if(snap) {
+        allTeachers = snap.teachers ? snap.teachers : {};
+        const allStudentsMap = snap.students ? snap.students : {};
+        const myClass = cleanClassStr(teacherData.assignedClass);
+        allClassStudents = Object.values(allStudentsMap).filter(s => s && cleanClassStr(s.class) === myClass);
+        allClassStudents.sort((a,b) => (b.points || 0) - (a.points || 0));
+        renderStudentGrid(allClassStudents);
+      }
+    }
+
     function cleanClassStr(str) { return str ? String(str).replace(/class\s*/i, "").trim() : ""; }
     function getTodayFormattedDate() { const d=new Date(); return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`; }
     function getAutoMonthName() { return ["January","February","March","April","May","June","July","August","September","October","November","December"][new Date().getMonth()]; }
-
-    async function fetchClassMates() {
-      const allStudentsMap = await safeDataFetch("students") || {};
-      const myClass = cleanClassStr(teacherData.assignedClass);
-      allClassStudents = Object.values(allStudentsMap).filter(s => s && cleanClassStr(s.class) === myClass);
-      renderStudentGrid(allClassStudents);
-    }
 
     // 2. PROFILE & CLAIMS
     function renderProfile() {
@@ -613,6 +622,7 @@
         btn.style.display = 'none';
         document.getElementById('tDailyClaimedBadge').style.display = 'block';
         teacherData.points = (teacherData.points || 0) + pts;
+        allTeachers[userId].points = teacherData.points; // Update local cache
         window.renderTeacherboardCardsTable(); 
       } else {
         window.alert(result.message);
@@ -621,34 +631,43 @@
       }
     });
 
-    // 3. IN / OUT LOGGING SYSTEM
+    // 3. IN / OUT LOGGING SYSTEM (WITH SHAKE FIX)
     async function checkInOutStatus() {
       const today = new Date();
       const dateKey = `${today.getFullYear()}_${(today.getMonth() + 1).toString().padStart(2, '0')}_${today.getDate().toString().padStart(2, '0')}`;
       const logData = await safeDataFetch(`teacher_logs/${dateKey}/${userId}`);
 
-      if (logData && logData.in) disableInOutButton('logInBtn', 'inTimeText', logData.in);
-      if (logData && logData.out) disableInOutButton('logOutBtn', 'outTimeText', logData.out);
+      if (logData && logData.in) setButtonSavedState('logInBtn', 'inTimeText', new Date(logData.in).toLocaleTimeString('en-IN'));
+      if (logData && logData.out) setButtonSavedState('logOutBtn', 'outTimeText', new Date(logData.out).toLocaleTimeString('en-IN'));
     }
 
-    function disableInOutButton(btnId, textId, timestamp) {
+    function setButtonSavedState(btnId, textId, timeStr) {
       const btn = document.getElementById(btnId); const txt = document.getElementById(textId);
-      btn.disabled = true; btn.style.background = "#64748b"; btn.innerText = "Saved";
-      txt.style.display = "block"; txt.innerText = `Logged at: ${new Date(timestamp).toLocaleTimeString('en-IN')}`;
+      btn.dataset.saved = "true";
+      btn.style.background = "#64748b"; btn.style.boxShadow = "none"; btn.innerText = "Saved ✔";
+      txt.style.display = "block"; txt.innerText = `Logged at: ${timeStr}`;
     }
 
-    document.getElementById('logInBtn').addEventListener('click', async () => {
-      document.getElementById('logInBtn').disabled = true; document.getElementById('logInBtn').innerText = "Verifying...";
+    document.getElementById('logInBtn').addEventListener('click', async function() {
+      if (this.dataset.saved === "true") {
+        this.classList.remove('shake-btn'); void this.offsetWidth; this.classList.add('shake-btn'); return;
+      }
+      this.innerText = "Verifying..."; this.style.pointerEvents = "none";
       const res = await logTeacherTime(userId, 'IN');
-      if (res.success) disableInOutButton('logInBtn', 'inTimeText', res.time);
-      else { window.alert(res.message); disableInOutButton('logInBtn', 'inTimeText', new Date().getTime()); }
+      if (res.success) setButtonSavedState('logInBtn', 'inTimeText', new Date(res.time).toLocaleTimeString('en-IN'));
+      else { window.alert(res.message); setButtonSavedState('logInBtn', 'inTimeText', new Date().toLocaleTimeString('en-IN')); }
+      this.style.pointerEvents = "auto";
     });
 
-    document.getElementById('logOutBtn').addEventListener('click', async () => {
-      document.getElementById('logOutBtn').disabled = true; document.getElementById('logOutBtn').innerText = "Verifying...";
+    document.getElementById('logOutBtn').addEventListener('click', async function() {
+      if (this.dataset.saved === "true") {
+        this.classList.remove('shake-btn'); void this.offsetWidth; this.classList.add('shake-btn'); return;
+      }
+      this.innerText = "Verifying..."; this.style.pointerEvents = "none";
       const res = await logTeacherTime(userId, 'OUT');
-      if (res.success) disableInOutButton('logOutBtn', 'outTimeText', res.time);
-      else { window.alert(res.message); disableInOutButton('logOutBtn', 'outTimeText', new Date().getTime()); }
+      if (res.success) setButtonSavedState('logOutBtn', 'outTimeText', new Date(res.time).toLocaleTimeString('en-IN'));
+      else { window.alert(res.message); setButtonSavedState('logOutBtn', 'outTimeText', new Date().toLocaleTimeString('en-IN')); }
+      this.style.pointerEvents = "auto";
     });
 
     // 4. ATTENDANCE SYSTEM
@@ -686,27 +705,6 @@
         allClassStudents.forEach(st => { updates[`attendance/${st.admn}/${currentMonth}/day_${todayNum}`] = "H"; });
         await update(ref(db), updates); window.alert("Marked today as Holiday."); loadTeacherTodayAttendance();
       }
-    });
-
-    document.getElementById("tTrackAttendanceBtn").addEventListener("click", async () => {
-      const admn = document.getElementById("tAttTrackSelectedAdmn").value || "ALL";
-      const month = document.getElementById("tAttTrackMonthSelect").value;
-      const targetDiv = document.getElementById("tAttReportContent"); targetDiv.innerHTML = "<p>Loading report...</p>";
-      document.getElementById("tAttReportArea").style.display = "block";
-
-      const allAtt = await safeDataFetch("attendance") || {};
-      const daysCount = new Date(new Date().getFullYear(), ["January","February","March","April","May","June","July","August","September","October","November","December"].indexOf(month) + 1, 0).getDate();
-      
-      let html = "";
-      if(admn !== "ALL") {
-         const st = allClassStudents.find(s=>s.admn===admn);
-         if(st) html = `<div>Report generated for ${st.name}. (Detailed view requires monolithic function sync)</div>`;
-      } else {
-         html = `<div class="table-container"><table style="min-width:100%;"><thead><tr><th>Name</th><th colspan="${daysCount}">Days</th></tr></thead><tbody>`;
-         allClassStudents.forEach(st => { html += `<tr><td style="text-align:left; font-weight:700;">${st.name}</td><td colspan="${daysCount}">Loaded</td></tr>`; });
-         html += `</tbody></table></div>`;
-      }
-      targetDiv.innerHTML = html;
     });
 
     // 5. STUDENTS DIRECTORY & SEARCH
@@ -781,7 +779,6 @@
       const qCont = document.getElementById("questionsContainer"); qCont.innerHTML = "";
       const isJson = autoFilledJsonQuestions && autoFilledJsonQuestions.length === numQ;
       
-      // Dynamic Urdu Class for preview logic
       const isUrdu = subject.toLowerCase() === 'urdu';
       const fontClass = isUrdu ? 'urdu-text' : '';
 
@@ -877,30 +874,11 @@
       } catch(e) { tbody.innerHTML = `<tr><td colspan="3" style="padding:12px; color:red;">Error loading results.</td></tr>`; }
     };
 
-    // 7. STUDY MATERIAL / HOMEWORK
-    document.getElementById("uploadMaterialBtn").addEventListener("click", async () => {
-      const title = document.getElementById("matTitleInput").value; const file = document.getElementById("matFileInput").files[0];
-      if(!title || !file) { window.alert("Title and File required."); return; }
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const matId = Date.now().toString(); const classKey = cleanClassStr(teacherData.assignedClass);
-        await set(ref(db, `study_material/${classKey}/${matId}`), { id: matId, title: title, type: document.getElementById("matTypeSelect").value, file: e.target.result, class: classKey, date: getTodayFormattedDate() });
-        window.alert("Uploaded Successfully."); window.closeModal("addStudyMaterialModal");
-      }; reader.readAsDataURL(file);
-    });
-
-    window.loadTeacherStudyMaterials = async function() {
-      const tbody = document.getElementById("manageMaterialTableBody"); const materials = await safeDataFetch(`study_material/${cleanClassStr(teacherData.assignedClass)}`); tbody.innerHTML = "";
-      if(materials) Object.values(materials).forEach(mat => { tbody.innerHTML += `<tr><td style="text-align:left; font-weight:700;">${mat.title}</td><td>${mat.type.toUpperCase()}</td><td><button class="btn-sm-del" onclick="window.deleteStudyMaterial('${mat.id}')">Del</button></td></tr>`; });
-      else tbody.innerHTML = `<tr><td colspan="3">No materials found.</td></tr>`;
-    };
-    window.deleteStudyMaterial = async function(id) { await remove(ref(db, `study_material/${cleanClassStr(teacherData.assignedClass)}/${id}`)); window.loadTeacherStudyMaterials(); };
-
-    // Dashboard Renderers
-    window.renderTeacherboardCardsTable = async function() {
+    // 7. DASHBOARD RENDERERS (Teacherboard & Rank Fix)
+    window.renderTeacherboardCardsTable = function() {
       const c = document.getElementById("teacherboardTableCardsContainer");
-      const tData = await safeDataFetch("teachers") || {};
-      const list = Object.values(tData).filter(t=>t.name).sort((a,b)=>(b.points||0)-(a.points||0));
+      if(Object.keys(allTeachers).length === 0) return;
+      const list = Object.values(allTeachers).filter(t=>t.name).sort((a,b)=>(b.points||0)-(a.points||0));
       c.innerHTML = "";
       list.forEach((t, idx) => {
         const isMe = t.username === userId;
@@ -918,22 +896,12 @@
       allClassStudents.forEach((st, idx) => { c.innerHTML += `<div class="lb-row"><div style="display:flex; align-items:center;"><div class="lb-badge">${idx+1}</div><span style="font-weight:800; font-size:13px;">${st.name}</span></div><span class="pts-chip">${st.points||0} PTS</span></div>`; });
     };
 
-    // Global Utilities, Three Dot Menu, & Drawers
+    // Global Utilities, Menu, & Drawers
     window.switchTab = function(tabId, el) { document.querySelectorAll('.tab-section').forEach(t => t.classList.remove('active', 'animate-in')); const target = document.getElementById(tabId); target.classList.add('active'); setTimeout(() => target.classList.add('animate-in'), 10); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); if(el) el.classList.add('active'); };
-    window.openModal = function(id) { document.getElementById('leftDrawer').style.left = '-80%'; document.getElementById('drawerOverlay').style.display='none'; document.getElementById(id).classList.add('active'); if(id==='manageStudyMaterialModal') window.loadTeacherStudyMaterials(); };
+    window.openModal = function(id) { document.getElementById('leftDrawer').style.left = '-80%'; document.getElementById('drawerOverlay').style.display='none'; document.getElementById(id).classList.add('active'); };
     window.closeModal = function(id) { document.getElementById(id).classList.remove('active'); };
     window.alert = function(msg) { document.getElementById("customAlertMessage").innerText = msg; document.getElementById("customAlertModal").classList.add("active"); };
     
-    // Fixed Three-Dot Menu
-    document.getElementById('threeDotBtn').addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('menuDropdown').classList.toggle('active'); });
-    document.addEventListener("click", (e) => { if(!e.target.closest("#threeDotBtn") && !e.target.closest("#menuDropdown")) { const m = document.getElementById("menuDropdown"); if(m) m.classList.remove("active"); } });
-    
-    document.getElementById('hamburgerBtn').addEventListener('click', () => { document.getElementById('leftDrawer').style.left = '0'; document.getElementById('drawerOverlay').style.display='block'; });
-    document.getElementById('closeDrawerBtn').addEventListener('click', () => { document.getElementById('leftDrawer').style.left = '-80%'; document.getElementById('drawerOverlay').style.display='none'; });
-    document.getElementById('drawerOverlay').addEventListener('click', () => { document.getElementById('leftDrawer').style.left = '-80%'; document.getElementById('drawerOverlay').style.display='none'; });
-    document.getElementById('logoutBtnTop').addEventListener('click', () => { localStorage.clear(); window.location.replace('../login.html'); });
-    document.getElementById('logoutBtnDrawer').addEventListener('click', () => { localStorage.clear(); window.location.replace('../login.html'); });
-
     // Notifications Engine
     function renderNotifications(notifs) {
       const c = document.getElementById('notifListContainer');
@@ -942,13 +910,10 @@
       notifs.forEach(n => { c.innerHTML += `<div style="padding:14px; border-bottom:1px solid var(--border-color); background:${n.read?'transparent':'rgba(2, 136, 209, 0.05)'}; margin-bottom:8px; border-radius:12px;"><div style="font-weight:800; font-size:13px; color:#7c3aed;">${n.title}</div><div style="font-size:11px; margin-top:4px;">${n.message}</div><div style="font-size:9px; color:var(--text-muted); margin-top:6px;">${new Date(n.timestamp).toLocaleString('en-IN')}</div></div>`; });
     }
     document.getElementById('notifBtn').addEventListener('click', () => { document.getElementById('notifSectionDrawer').classList.add('active'); markNotificationsAsRead(userId); });
-    document.getElementById('closeNotifBtn').addEventListener('click', () => document.getElementById('notifSectionDrawer').classList.remove('active'));
 
-    // Theme Config
     document.getElementById("darkModeCheckbox").addEventListener("change", (e) => { document.body.classList.toggle("dark-mode", e.target.checked); localStorage.setItem("darkMode", e.target.checked ? "enabled" : "disabled"); });
     if(localStorage.getItem("darkMode") === "enabled") { document.body.classList.add("dark-mode"); document.getElementById("darkModeCheckbox").checked = true; }
 
-    // Boot
     initDashboard();
   </script>
 </body>
